@@ -1,6 +1,8 @@
 'use strict';
 
 const Hapi        = require('hapi');
+const Inert       = require('inert');
+const Vision      = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack        = require('./package.json');
 const Fs          = require('fs');
@@ -37,6 +39,8 @@ const server = new Hapi.Server({
 
     /* register plugins */
     await server.register([
+        Inert,
+        Vision,
         HapiSwaggerConfig
     ]);
 
