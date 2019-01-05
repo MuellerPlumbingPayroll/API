@@ -1,35 +1,57 @@
 'use strict';
 
-const Hapi=require('hapi');
+const Hapi        = require('hapi');
+const HapiSwagger = require('hapi-swagger');
+const Pack        = require('./package.json');
+const Fs          = require('fs');
+const _           = require('lodash');
 
-// Create a server with a host and port
-const server=Hapi.server({
-    host:'localhost',
-    port:8000
+const server = new Hapi.Server({
+    host: 'localhost',
+    port: process.env.PORT
 });
 
-// Add the route
-server.route({
-    method:'GET',
-    path:'/hello',
-    handler:function(request,h) {
+(async () => {
 
-        return'hello world';
-    }
-});
+    const HapiSwaggerConfig = {
+        plugin: HapiSwagger,
+        options: {
+            info: {
+                title: Pack.name,
+                description: Pack.description,
+                version: Pack.version
+            },
+            swaggerUI: true,
+            basePath: '/',
+            pathPrefixSize: 2,
+            jsonPath: '/docs/swagger.json',
+            sortPaths: 'path-method',
+            lang: 'en',
+            tags: [
+                { name: 'api' }
+            ],
+            documentationPath: '/',
+            securityDefinitions: {}
+        }
+    };
 
-// Start the server
-const start =  async function() {
+    /* register plugins */
+    await server.register([
+        HapiSwaggerConfig
+    ]);
 
-    try {
-        await server.start();
-    }
-    catch (err) {
-        console.log(err);
-        process.exit(1);
-    }
+    // require routes
+    Fs.readdirSync('routes').forEach((file) => {
+
+        _.each(require('./routes/' + file), (routes) => {
+
+            server.route(routes);
+        });
+    });
+
+    await server.start();
 
     console.log('Server running at:', server.info.uri);
-};
+})();
 
-start();
+module.exports = server;
