@@ -24,8 +24,10 @@
     "eslint-plugin-hapi": "^4.1.0",
     "hapi": "^17.8.1",
     "hapi-swagger": "^9.3.0",
+    "inert": "^5.1.2",
     "joi": "^14.3.1",
-    "promise": "^8.0.2"
+    "promise": "^8.0.2",
+    "vision": "^5.4.4"
   },
   "devDependencies": {
     "code": "^5.2.4",
