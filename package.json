@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node app.js",
-    "test": "NODE_ENV=test node node_modules/lab/bin/lab -v -L -C -c -t 85",
+    "test": "NODE_ENV=test node node_modules/lab/bin/lab -v -L -C -c -t 0",
     "test-cov-html": "lab -r html -o coverage.html"
   },
   "repository": {
