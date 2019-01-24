@@ -2,6 +2,6 @@ module.exports = {
     "extends": "hapi",
 	"parserOptions": {
 		"sourceType": "module",
-		"ecmaVersion": 6
+		"ecmaVersion": 8
 	}
 };
