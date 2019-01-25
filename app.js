@@ -1,4 +1,4 @@
-'use strict';
+
 
 const Hapi        = require('hapi');
 const Inert       = require('inert');
@@ -7,6 +7,9 @@ const HapiSwagger = require('hapi-swagger');
 const Pack        = require('./package.json');
 const Fs          = require('fs');
 const _           = require('lodash');
+const Admin = require('firebase-admin');
+
+Admin.initializeApp();
 
 const server = new Hapi.Server({
     host: 'localhost',
@@ -14,6 +17,7 @@ const server = new Hapi.Server({
 });
 
 (async () => {
+
 
     const HapiSwaggerConfig = {
         plugin: HapiSwagger,
