@@ -8,6 +8,7 @@ const Pack        = require('./package.json');
 const Fs          = require('fs');
 const _           = require('lodash');
 const Admin = require('firebase-admin');
+const Routes = require('./routes/index');
 
 Admin.initializeApp();
 
@@ -49,14 +50,7 @@ const server = new Hapi.Server({
     ]);
 
     // require routes
-    Fs.readdirSync('routes').forEach((file) => {
-
-        _.each(require('./routes/' + file), (routes) => {
-
-            server.route(routes);
-        });
-    });
-
+    await server.route(Routes);
     await server.start();
 
     console.log('Server running at:', server.info.uri);
