@@ -1,8 +1,8 @@
 {
     "presets": [
-        "node8"
+      "env"
     ],
     "plugins": [
       "lodash"
     ]
-  }
+}

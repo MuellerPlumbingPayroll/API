@@ -4,12 +4,13 @@ const Hapi        = require('hapi');
 const Inert       = require('inert');
 const Vision      = require('vision');
 const HapiSwagger = require('hapi-swagger');
-const Pack        = require('./package.json');
+const Pack        = require('../package.json');
 const Fs          = require('fs');
 const _           = require('lodash');
 const Admin = require('firebase-admin');
 const Routes = require('./routes/index');
 
+require('babel-core').transform('code');
 Admin.initializeApp();
 
 const server = new Hapi.Server({
