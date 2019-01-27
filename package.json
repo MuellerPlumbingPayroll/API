@@ -6,7 +6,7 @@
   "scripts": {
     "build": "SET NODE_ENV=production  &  webpack -p --config ./webpack.config.babel.js",
     "start": "nodemon --watch src bin/babelify.js ./src/server.js",
-    "test": "SET NODE_ENV=test & node node_modules/lab/bin/lab -T node_modules/lab-babel -v -L -C -c -t 0",
+    "test": "SET NODE_ENV=test & lab -c -L -I 'Reflect,core,_babelPolyfill,regeneratorRuntime,__core-js_shared__' -t 0",
     "testloc": "node node_modules/lab/bin/lab -v -L -C -c -t 0",
     "test-cov-html": "lab -r html -o coverage.html"
   },
@@ -51,7 +51,6 @@
     "jsonwebtoken": "^7.4.0",
     "lab": "^18.0.1",
     "lab-babel": "^1.1.1",
-    "lodash": "^4.17.4",
     "nodemon": "^1.18.9",
     "nyc": "^10.2.0",
     "uglify-js": "git://github.com/mishoo/UglifyJS2.git#harmony",

@@ -5,8 +5,6 @@ const Inert       = require('inert');
 const Vision      = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack        = require('../package.json');
-const Fs          = require('fs');
-const _           = require('lodash');
 const Admin = require('firebase-admin');
 
 import routes from './routes/index';
