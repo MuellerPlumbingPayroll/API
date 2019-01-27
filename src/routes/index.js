@@ -1,6 +1,6 @@
 import jobs from './jobs';
-const routes = [];
+let routes = [];
 
 
-routes.concat(jobs);
-module.exports = routes;
+routes = routes.concat(jobs);
+export default routes;

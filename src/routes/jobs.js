@@ -1,9 +1,16 @@
 
-import { functions } from '../handlers/job';
+import  functions  from '../handlers/job';
+
 const jobs = [{
     method: 'GET',
-    path: '/',
-    handler: functions.get
+    path: '/test',
+    handler: functions.get,
+    options:{
+        tags: [
+            'api'
+        ]
+    }
+
 }
 ];
 export default jobs;

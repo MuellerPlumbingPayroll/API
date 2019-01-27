@@ -8,7 +8,8 @@ const Pack        = require('../package.json');
 const Fs          = require('fs');
 const _           = require('lodash');
 const Admin = require('firebase-admin');
-const Routes = require('./routes/index');
+
+import routes from './routes/index';
 
 require('babel-core').transform('code');
 Admin.initializeApp();
@@ -50,8 +51,9 @@ const server = new Hapi.Server({
         HapiSwaggerConfig
     ]);
 
+    console.log(routes);
     // require routes
-    await server.route(Routes);
+    await server.route(routes);
     await server.start();
 
     console.log('Server running at:', server.info.uri);
