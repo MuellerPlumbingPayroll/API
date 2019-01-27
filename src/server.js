@@ -4,20 +4,21 @@ const Hapi        = require('hapi');
 const Inert       = require('inert');
 const Vision      = require('vision');
 const HapiSwagger = require('hapi-swagger');
-const Pack        = require('./package.json');
+const Pack        = require('../package.json');
 const Fs          = require('fs');
 const _           = require('lodash');
-const Admin = require('firebase-admin');
 
-Admin.initializeApp();
+import { routes } from './routes/index';
 
+
+console.log('Here');
 const server = new Hapi.Server({
     host: 'localhost',
-    port: process.env.PORT
+    port: 1234
 });
 
-(async () => {
 
+(async () => {
 
     const HapiSwaggerConfig = {
         plugin: HapiSwagger,
@@ -49,17 +50,18 @@ const server = new Hapi.Server({
     ]);
 
     // require routes
-    Fs.readdirSync('routes').forEach((file) => {
+    server.route({
+        method: 'GET',
+        path: '/a',
+        handler: function (request, h) {
 
-        _.each(require('./routes/' + file), (routes) => {
-
-            server.route(routes);
-        });
+            return 'Hello!';
+        }
     });
 
     await server.start();
 
-    console.log('Server running at:', server.info.uri);
+    console.log('Server rundfsdfning at:', server.info.uri);
 })();
 
 module.exports = server;
