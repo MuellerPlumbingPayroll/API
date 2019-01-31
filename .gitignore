@@ -83,4 +83,6 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# HTML
 # End of https://www.gitignore.io/api/node
+coverage.html
