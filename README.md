@@ -7,8 +7,8 @@ A short description of the motivation behind the creation and maintenance of the
 ## Build status
 Build status of travis
 
-Master: [![Build Status](https://travis-ci.org/MuellerPlumbingPayroll/API.svg?branch=master)](https://travis-ci.org/MuellerPlumbingPayroll/API)
-Development: [![Build Status](https://travis-ci.org/MuellerPlumbingPayroll/API.svg?branch=develop)](https://travis-ci.org/MuellerPlumbingPayroll/API)
+Master: [![Build Status](https://travis-ci.org/MullerPlumbingPayroll/API.svg?branch=master)](https://travis-ci.org/MullerPlumbingPayroll/API)
+Development: [![Build Status](https://travis-ci.org/MullerPlumbingPayroll/API.svg?branch=develop)](https://travis-ci.org/MullerPlumbingPayroll/API)
 
 ## Tech/framework used
 <b>Built with</b>
