@@ -84,5 +84,6 @@ typings/
 .dynamodb/
 
 # HTML
-# End of https://www.gitignore.io/api/node
 coverage.html
+# End of https://www.gitignore.io/api/node
+
