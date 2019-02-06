@@ -3,6 +3,10 @@
       "env"
     ],
     "plugins": [
-      "lodash"
+      "lodash",
+      ["transform-runtime", {
+        "polyfill": false,
+        "regenerator": true
+      }]
     ]
 }
