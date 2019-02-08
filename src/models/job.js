@@ -1,17 +1,13 @@
-class Entry{
-    constructor(hours, userId){
+class Job{
+    constructor(id,clientName,address,isActive){
 
-        this.hours = hours;
-        this.userId = userId;
+        this.id = id; //number
+        this.clientName = clientName; //string
+        this.address = address; //string
+        this.isActive = isActive; //bool
     }
-
 }
 
-const JobType = Object.freeze({
-    CONSTRUCTION:   Symbol('construction'),
-    SERVICE:  Symbol('service'),
-    OTHER: Symbol('other')
-});
 
 
-export default { Entry,JobType };
+export default Job;
