@@ -10,7 +10,15 @@ const Admin = require('firebase-admin');
 import routes from './routes/index';
 
 require('babel-core').transform('code');
-Admin.initializeApp();
+
+// Initialize Firebase
+var config = { 
+    projectId: "mueller-plumbing-salary" 
+};
+Admin.initializeApp(config);
+
+const db = Admin.firestore();
+db.settings({ timestampsInSnapshots: true });
 
 const server = new Hapi.Server({
     host: 'localhost',
@@ -56,4 +64,7 @@ const server = new Hapi.Server({
     console.log('Server running at:', server.info.uri);
 })();
 
-module.exports = server;
+module.exports = {
+    server: server,
+    db: db
+}
