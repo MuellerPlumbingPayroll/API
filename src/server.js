@@ -12,8 +12,9 @@ import routes from './routes/index';
 require('babel-core').transform('code');
 
 // Initialize Firebase
-var config = { 
-    projectId: "mueller-plumbing-salary" 
+const config = {
+
+    projectId: 'mueller-plumbing-salary'
 };
 Admin.initializeApp(config);
 
@@ -57,6 +58,8 @@ const server = new Hapi.Server({
         HapiSwaggerConfig
     ]);
 
+    console.log(routes);
+
     // require routes
     await server.route(routes);
     await server.start();
@@ -65,6 +68,6 @@ const server = new Hapi.Server({
 })();
 
 module.exports = {
-    server: server,
-    db: db
-}
+    server,
+    db
+};
