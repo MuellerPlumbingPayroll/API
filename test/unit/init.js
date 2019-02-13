@@ -12,7 +12,13 @@ lab.experiment('inject requests with server.inject', () => {
 
     lab.test('injects a request to a hapi server without a route', async () => {
 
-        const res = await Server.inject('/test');
+        const res = await Server.server.inject('/test');
+        Code.expect(res.statusCode).to.equal(200);
+    });
+
+    lab.test('get cost codes', async () => {
+
+        const res = await Server.server.inject('/cost-code/');
         Code.expect(res.statusCode).to.equal(200);
     });
 });
