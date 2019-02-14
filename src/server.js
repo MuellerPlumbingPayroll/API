@@ -22,7 +22,8 @@ const db = Admin.firestore();
 db.settings({ timestampsInSnapshots: true });
 
 const server = new Hapi.Server({
-    host: 'localhost',
+    //host: 'localhost',
+    host: '0.0.0.0', //For Deploy
     port: process.env.PORT
 });
 

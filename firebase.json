@@ -9,7 +9,7 @@
     ]
   },
   "hosting": {
-    "public": "public",
+    "public": "src",  // the only required attribute for hosting
     "ignore": [
       "firebase.json",
       "**/.*",
