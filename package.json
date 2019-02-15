@@ -29,6 +29,7 @@
     "inert": "^5.1.2",
     "joi": "^14.3.1",
     "promise": "^8.0.2",
+    "sinon": "^7.2.3",
     "vision": "^5.4.4"
   },
   "devDependencies": {

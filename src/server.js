@@ -58,7 +58,7 @@ const server = new Hapi.Server({
         HapiSwaggerConfig
     ]);
 
-    console.log(routes);
+    //console.log(routes);
 
     // require routes
     await server.route(routes);
