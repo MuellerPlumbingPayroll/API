@@ -33,7 +33,7 @@
     "promise": "^8.0.2",
     "babel-register": "^6.26.0",
     "sinon": "^7.2.3",
-    "vision": "^5.4.4"
+    "vision": "^5.4.4",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.0.0",
