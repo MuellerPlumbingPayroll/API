@@ -1,4 +1,4 @@
-import Boomify from 'Boom';
+import Boomify from 'boom';
 
 const functions = Object.create({});
 
