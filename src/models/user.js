@@ -9,22 +9,3 @@ class User{
 }
 
 export default User;
-
-
-
-// return {
-
-//     doc: Sinon.stub().withArgs('9999').resolves(() => {
-
-//         set: Sinon.stub();
-//     })
-// };
-// return {
-//     doc: Sinon.stub().withArgs('9999').callsFake(() => {
-
-//         return {
-
-//             set: Sinon.stub()
-//         };
-//     })
-// };
