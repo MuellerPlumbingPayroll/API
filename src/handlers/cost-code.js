@@ -4,19 +4,20 @@ const functions = Object.create({});
 
 functions.addCostCode = async (request, h) => {
 
-    const code = request.payload.code;
-    const description = request.payload.description;
+    const payLoad = request.payload;
+    const code = payLoad.code;
+    const description = payLoad.description;
 
     const server = require('../server.js');
 
-    // Create new cost code document. If code already exists then update.
+    // Create new cost-code document. If cost-code already exists then update.
     try {
         await server.db.collection('cost-codes').doc(String(code)).set({
             code,
             description
         });
 
-        return 'Successfully added cost code'; // return 200
+        return h.response(payLoad).code(201); // return created status code
     }
     catch (err) {
         return new Boomify(err);
@@ -28,7 +29,7 @@ functions.getCostCodes = async (request, h) => {
     const server = require('../server.js');
 
     try {
-        const snapshot = await server.db.collection('cost-codes').get();
+        const snapshot = await server.db.collection('cost-codes').get(); // All documents in cost-codes collection
         if (snapshot.empty) {
             return {};
         }
