@@ -1,4 +1,5 @@
 import functions from '../handlers/cost-code.js';
+import costCodeSchema from '../models/costcode.js';
 
 const costCodes = [{
     method: 'POST',
@@ -7,7 +8,10 @@ const costCodes = [{
     options:{
         tags: [
             'api'
-        ]
+        ],
+        validate: {
+            payload: costCodeSchema
+        }
     }
 
 },

@@ -1,10 +1,8 @@
-class CostCode{
-    constructor(id, code, description){
+const Joi = require('joi');
 
-        this.id = id;
-        this.code = code;
-        this.description = description;
-    }
-}
+const costCodeSchema = Joi.object().keys({
+    code: Joi.number().integer().required(),
+    description: Joi.string().min(5).max(140).required()
+});
 
-export default CostCode;
+export default costCodeSchema;
