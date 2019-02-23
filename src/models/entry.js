@@ -1,20 +1,21 @@
 const Joi = require('joi');
 
-const JobType = ['construction', 'service', 'other'];
+const maxNumberHours = 16;
+const JobType = ['Construction', 'Service', 'Other'];
 
 const EntrySchema = Joi.object().keys({
     id: Joi.string().required(),
-    userId: Joi.number().required(),
+    userId: Joi.string().required(),
 
     jobType: Joi.string().valid(JobType).required(),
     jobDescription: Joi.string().required(),
-    costCode: Joi.number(), // May not care about some cost-codes e.g. holiday
+    costCode: Joi.string(), // May not care about some cost-codes e.g. holiday
 
-    timeWorked: Joi.number().required(),
+    timeWorked: Joi.number().min(0).max(maxNumberHours).required(),
     timeCreated: Joi.date().required(),
     timeUpdated: Joi.date().required(),
 
-    // Location 
+    // Location
     latitudeCreated: Joi.number().min(-90).max(90).default(null),
     latitudeUpdated: Joi.number().min(-90).max(90).default(null),
     longitudeCreated: Joi.number().min(-180).max(180).default(null),
