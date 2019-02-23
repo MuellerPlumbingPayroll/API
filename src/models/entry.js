@@ -1,36 +1,24 @@
-class Entry{
-    constructor(hours,
-        userId,
-        UTCtime,
-        jobType,
-        jobDescription,
-        costCode,
-        timeWorked,
-        timeCreated,
-        latitudeCreated,
-        longitudeCreated,
-        id){
+const Joi = require('joi');
 
-        this.id = id; //number
-        this.hours = hours; //number
-        this.userId = userId; //number
-        this.UTCtime = UTCtime; //DateTime
-        this.jobType = jobType; //JobType
-        this.jobDescription = jobDescription; //string
-        this.costCode = costCode; //string
-        this.timeWorked = timeWorked; //DateTime
-        this.timeCreated = timeCreated; //DateTime
-        this.timeUpdated = timeCreated; //DateTime
-        this.latitudeCreated = latitudeCreated; //string or number we will see
-        this.latitudeUpdated = latitudeCreated; //string or number we will see
-        this.longitudeCreated = longitudeCreated; //string or number we will see
-        this.longitudeUpdated = longitudeCreated; //string or number we will see
-    }
-}
+const JobType = ['construction', 'service', 'other'];
 
-const JobType = Object.freeze({
-    CONSTRUCTION:   Symbol('construction'),
-    SERVICE:  Symbol('service'),
-    OTHER: Symbol('other')
+const EntrySchema = Joi.object().keys({
+    id: Joi.string().required(),
+    userId: Joi.number().required(),
+
+    jobType: Joi.string().valid(JobType).required(),
+    jobDescription: Joi.string().required(),
+    costCode: Joi.number(), // May not care about some cost-codes e.g. holiday
+
+    timeWorked: Joi.number().required(),
+    timeCreated: Joi.date().required(),
+    timeUpdated: Joi.date().required(),
+
+    // Location 
+    latitudeCreated: Joi.number().min(-90).max(90).default(null),
+    latitudeUpdated: Joi.number().min(-90).max(90).default(null),
+    longitudeCreated: Joi.number().min(-180).max(180).default(null),
+    longitudeUpdated: Joi.number().min(-180).max(180).default(null)
 });
-export default { Entry,JobType };
+
+export default EntrySchema;
