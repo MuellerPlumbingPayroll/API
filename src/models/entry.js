@@ -9,7 +9,7 @@ const EntrySchema = Joi.object().keys({
 
     jobType: Joi.string().valid(JobType).required(),
     jobDescription: Joi.string().required(),
-    costCode: Joi.string(), // May not care about some cost-codes e.g. holiday
+    costCode: Joi.string().default(null), // May not care about some cost-codes e.g. holiday
 
     timeWorked: Joi.number().min(0).max(maxNumberHours).required(),
     timeCreated: Joi.date().required(),
