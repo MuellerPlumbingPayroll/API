@@ -3,20 +3,11 @@ const Code = require('code');
 const Lab = require('lab');
 const Server = require('../../src/server');
 const Sinon = require('sinon');
-const Joi = require('joi');
 
 const lab = exports.lab = Lab.script();
 
 
 lab.experiment('When adding an entry', () => {
-
-    // Sinon.beforeEach( () => {
-
-    //     const injectOptions = {
-    //         method: 'POST',
-    //         url: '/entry/fakeUser'
-    //     };
-    // });
 
     lab.test('should return 400 status code if payload is missing entry attributes.', async () => {
 
@@ -31,7 +22,7 @@ lab.experiment('When adding an entry', () => {
 
         const injectOptions = {
             method: 'POST',
-            url: '/entry/fakeUser',
+            url: '/Entry',
             payload: missingAttrsPayLoad
         };
 
@@ -40,7 +31,7 @@ lab.experiment('When adding an entry', () => {
         Code.expect(res.statusCode).to.equal(400); // Expect Bad Request HTTP response
     });
 
-    lab.test('should return 400 status code if userId is not a string', async () => {
+    lab.test('should return 400 status code if values do not match entry shema', async () => {
 
         const created = '2015-01-01T15:23:42';
         const updated = '2016-01-01T15:23:42';
@@ -62,7 +53,7 @@ lab.experiment('When adding an entry', () => {
 
         const injectOptions = {
             method: 'POST',
-            url: '/entry/fakeUser',
+            url: '/Entry',
             payload: malformedAttrs
         };
 
@@ -110,7 +101,7 @@ lab.experiment('When adding an entry', () => {
 
         const injectOptions = {
             method: 'POST',
-            url: '/entry/fakeUser',
+            url: '/Entry',
             payload: timeEntry
         };
 
