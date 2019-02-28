@@ -1,2 +1,3 @@
-runtime: nodejs8
-env: standard 
+runtime: nodejs
+env: flex 
+service: api

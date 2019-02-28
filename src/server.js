@@ -14,7 +14,7 @@ require('babel-core').transform('code');
 // Initialize Firebase
 const config = {
 
-    projectId: 'mueller-plumbing-salary'
+    projectId: 'muller-plumbing-salary'
 };
 Admin.initializeApp(config);
 
