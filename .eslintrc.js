@@ -1,6 +1,9 @@
 module.exports = {
-    "extends": "hapi",
+	"extends": "hapi",
+	"parser": "babel-eslint",
 	"parserOptions": {
-		"ecmaVersion": 2017
+		"sourceType": "module",
+		"ecmaVersion": 6,
+		"allowImportExportEverywhere": true
 	}
 };

@@ -1,19 +1,34 @@
-'use strict';
+
 
 const Hapi        = require('hapi');
 const Inert       = require('inert');
 const Vision      = require('vision');
 const HapiSwagger = require('hapi-swagger');
-const Pack        = require('./package.json');
-const Fs          = require('fs');
-const _           = require('lodash');
+const Pack        = require('../package.json');
+const Admin = require('firebase-admin');
+
+import routes from './routes/index';
+
+require('babel-core').transform('code');
+
+// Initialize Firebase
+const config = {
+
+    projectId: 'mueller-plumbing-salary'
+};
+Admin.initializeApp(config);
+
+const db = Admin.firestore();
+db.settings({ timestampsInSnapshots: true });
 
 const server = new Hapi.Server({
-    host: 'localhost',
+    //host: 'localhost',
+    host: '0.0.0.0', //For Deploy
     port: process.env.PORT
 });
 
 (async () => {
+
 
     const HapiSwaggerConfig = {
         plugin: HapiSwagger,
@@ -44,18 +59,16 @@ const server = new Hapi.Server({
         HapiSwaggerConfig
     ]);
 
+    //console.log(routes);
+
     // require routes
-    Fs.readdirSync('routes').forEach((file) => {
-
-        _.each(require('./routes/' + file), (routes) => {
-
-            server.route(routes);
-        });
-    });
-
+    await server.route(routes);
     await server.start();
 
     console.log('Server running at:', server.info.uri);
 })();
 
-module.exports = server;
+module.exports = {
+    server,
+    db
+};

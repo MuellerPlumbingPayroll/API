@@ -1,0 +1,12 @@
+{
+    "presets": [
+      "env"
+    ],
+    "plugins": [
+      "lodash",
+      ["transform-runtime", {
+        "polyfill": false,
+        "regenerator": true
+      }]
+    ]
+}
