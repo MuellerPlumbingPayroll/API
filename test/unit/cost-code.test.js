@@ -116,7 +116,7 @@ lab.experiment('When adding cost-codes', () => {
 
         const res = await Server.server.inject(injectOptions);
 
-        firebaseStub.restore;
+        firebaseStub.parent.restore();
 
         Sinon.assert.calledOnce(firebaseStub);
         Code.expect(res.statusCode).to.equal(201); // Expect Created HTTP response
