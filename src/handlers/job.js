@@ -11,10 +11,12 @@ functions.addJobs = async (request, h) => {
         await jobs.forEach((job) => {
 
             if (job.id === null) { // new job
-                server.db.collection('jobs').add(job); // initially id field in database is null
+                delete job.id; // don't store id as a field
+                server.db.collection('jobs').add(job);
             }
             else { // existing job
                 const jobRef = server.db.collection('jobs').doc(job.id);
+                delete job.id; // don't store id as a field
                 jobRef.update(job);
             }
         });
@@ -22,7 +24,6 @@ functions.addJobs = async (request, h) => {
         return h.response();
     }
     catch (error) {
-        console.log(error);
         return new Boomify(error);
     }
 
