@@ -122,3 +122,60 @@ lab.experiment('When adding cost-codes', () => {
         Code.expect(res.statusCode).to.equal(201); // Expect Created HTTP response
     });
 });
+
+lab.experiment('when deleting a cost-code', () => {
+
+    lab.test('should return 500 status code if error occurs', async () => {
+
+        const deleteStub = Sinon.stub(Server.db, 'collection').withArgs('cost-codes').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        delete: Sinon.stub().returns(Promise.reject())
+                    };
+                }
+            };
+        });
+
+        const injectOptions = {
+            method: 'DELETE',
+            url: '/cost-code/fakeCodeId'
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        deleteStub.parent.restore();
+
+        Sinon.assert.calledOnce(deleteStub);
+        Code.expect(res.statusCode).to.equal(500);
+    });
+
+    lab.test('should return OK status code if cost-code deleted successfully', async () => {
+
+        const deleteStub = Sinon.stub(Server.db, 'collection').withArgs('cost-codes').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        delete: Sinon.stub().returns(Promise.resolve())
+                    };
+                }
+            };
+        });
+
+        const injectOptions = {
+            method: 'DELETE',
+            url: '/cost-code/fakeCodeId'
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        deleteStub.parent.restore();
+
+        Sinon.assert.calledOnce(deleteStub);
+        Code.expect(res.statusCode).to.equal(200);
+    });
+});
