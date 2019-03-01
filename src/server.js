@@ -14,7 +14,7 @@ require('babel-core').transform('code');
 // Initialize Firebase
 const config = {
 
-    projectId: 'mueller-plumbing-salary'
+    projectId: 'muller-plumbing-salary'
 };
 Admin.initializeApp(config);
 
@@ -24,7 +24,8 @@ db.settings({ timestampsInSnapshots: true });
 const server = new Hapi.Server({
     //host: 'localhost',
     host: '0.0.0.0', //For Deploy
-    port: process.env.PORT
+    port: process.env.PORT,
+    cors: true
 });
 
 (async () => {
