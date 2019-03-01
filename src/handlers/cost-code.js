@@ -41,4 +41,19 @@ functions.getCostCodes = async (request, h) => {
     }
 };
 
+functions.removeCostCode = async (request, h) => {
+
+    const server = require('../server.js');
+
+    const id = request.params.id;
+    try {
+        await server.db.collection('cost-codes').doc(id).delete();
+
+        return h.response();
+    }
+    catch (error) {
+        return new Boomify(error);
+    }
+};
+
 export default functions;
