@@ -14,7 +14,7 @@ require('babel-core').transform('code');
 // Initialize Firebase
 const config = {
 
-    projectId: 'mueller-plumbing-salary'
+    projectId: 'muller-plumbing-salary'
 };
 Admin.initializeApp(config);
 
@@ -59,7 +59,7 @@ const server = new Hapi.Server({
         HapiSwaggerConfig
     ]);
 
-    //console.log(routes);
+    // console.log(routes);
 
     // require routes
     await server.route(routes);
