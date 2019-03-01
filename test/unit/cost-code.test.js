@@ -91,7 +91,7 @@ lab.experiment('When adding cost-codes', () => {
 
     lab.test('should successfully add cost-code if payload is valid.', async () => {
 
-        const fakeCostCode = { code: 9999, description: 'fake code description.' };
+        const fakeCostCode = { code: '22-100', codeGroup: 'code group 44', description: 'fake code description.' };
 
         // Stub adding a cost-code to firebase
         const firebaseStub = Sinon.stub(Server.db, 'collection').withArgs('cost-codes').callsFake(() => {
