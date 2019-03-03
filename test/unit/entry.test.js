@@ -22,7 +22,7 @@ lab.experiment('When adding an entry', () => {
 
         const injectOptions = {
             method: 'POST',
-            url: '/Entry',
+            url: '/entry',
             payload: missingAttrsPayLoad
         };
 
@@ -53,7 +53,7 @@ lab.experiment('When adding an entry', () => {
 
         const injectOptions = {
             method: 'POST',
-            url: '/Entry',
+            url: '/entry',
             payload: malformedAttrs
         };
 
@@ -101,7 +101,7 @@ lab.experiment('When adding an entry', () => {
 
         const injectOptions = {
             method: 'POST',
-            url: '/Entry',
+            url: '/entry',
             payload: timeEntry
         };
 
@@ -111,5 +111,83 @@ lab.experiment('When adding an entry', () => {
 
         Sinon.assert.calledOnce(firebaseStub);
         Code.expect(res.statusCode).to.equal(201);
+    });
+});
+
+lab.experiment('when retrieving entries', () => {
+
+    lab.test('should return 500 status code if error occurs', async () => {
+
+        const getEntriesStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        collection() {
+
+                            return {
+                                get: Sinon.stub().returns(Promise.reject())
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+        const injectOptions = {
+            method: 'GET',
+            url: '/entries/fakeUserId'
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        getEntriesStub.parent.restore();
+
+        Sinon.assert.calledOnce(getEntriesStub);
+        Code.expect(res.statusCode).to.equal(500);
+    });
+
+    lab.test('should successfully return entries', async () => {
+
+        const getEntriesStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        collection() {
+
+                            return {
+                                get: Sinon.stub().returns({
+                                    docs: [
+                                        {
+                                            id: '38edufjhryu',
+                                            data: () => {
+
+                                                return { docData: 'fake entry Data' };
+                                            }
+                                        }
+                                    ]
+                                })
+                            };
+                        }
+                    };
+                }
+            };
+
+        });
+
+        const injectOptions = {
+            method: 'GET',
+            url: '/entries/fakeUserId'
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        getEntriesStub.parent.restore();
+
+        Sinon.assert.calledOnce(getEntriesStub);
+        Code.expect(res.statusCode).to.equal(200);
     });
 });

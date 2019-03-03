@@ -3,7 +3,7 @@ import EntrySchema from '../models/entry.js';
 
 const entries = [{
     method: 'POST',
-    path: '/Entry',
+    path: '/entry',
     handler: functions.addEntry,
     options:{
         tags: [
@@ -12,6 +12,16 @@ const entries = [{
         validate: {
             payload: EntrySchema
         }
+    }
+},
+{
+    method: 'GET',
+    path: '/entries/{userId}',
+    handler: functions.getUserEntries,
+    options: {
+        tags: [
+            'api'
+        ]
     }
 }
 ];

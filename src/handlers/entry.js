@@ -35,4 +35,24 @@ functions.addEntry = async (request, h) => {
     }
 };
 
+// Gets all entries for a single user
+functions.getUserEntries = async (request, h) => {
+
+    const server = require('../server.js');
+
+    const userId = request.params.userId;
+
+    try {
+        const snapshot = await server.db.collection('users').doc(userId).collection('entries').get();
+        if (snapshot.empty) {
+            return {};
+        }
+
+        return snapshot.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
+    }
+    catch (error) {
+        return new Boomify(error);
+    }
+};
+
 export default functions;
