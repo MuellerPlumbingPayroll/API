@@ -55,4 +55,22 @@ functions.getUserEntries = async (request, h) => {
     }
 };
 
+// Remove a single entry for a given user
+functions.removeEntry = async (request, h) => {
+
+    const server = require('../server.js');
+
+    const entryId = request.params.id;
+    const userId = request.params.userId;
+
+    try {
+        await server.db.collection('users').doc(userId).collection('entries').doc(entryId).delete();
+
+        return h.response(); // Will return OK
+    }
+    catch (error) {
+        return new Boomify(error);
+    }
+};
+
 export default functions;

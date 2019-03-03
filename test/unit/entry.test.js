@@ -191,3 +191,80 @@ lab.experiment('when retrieving entries', () => {
         Code.expect(res.statusCode).to.equal(200);
     });
 });
+
+lab.experiment('when deleting an entry', () => {
+
+    lab.test('should return 500 status code if error occurs', async () => {
+
+        const deleteStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        collection() {
+
+                            return {
+                                doc() {
+
+                                    return {
+                                        delete: Sinon.stub().returns(Promise.reject())
+                                    };
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+        const injectOptions = {
+            method: 'DELETE',
+            url: '/entry/fakeEntryId/fakeUserId'
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        deleteStub.parent.restore();
+
+        Sinon.assert.calledOnce(deleteStub);
+        Code.expect(res.statusCode).to.equal(500);
+    });
+
+    lab.test('should return 200 status code if no errors occur', async () => {
+
+        const deleteStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        collection() {
+
+                            return {
+                                doc() {
+
+                                    return {
+                                        delete: Sinon.stub().returns(Promise.resolve())
+                                    };
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+        const injectOptions = {
+            method: 'DELETE',
+            url: '/entry/fakeEntryId/fakeUserId'
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        deleteStub.parent.restore();
+
+        Sinon.assert.calledOnce(deleteStub);
+        Code.expect(res.statusCode).to.equal(200);
+    });
+});

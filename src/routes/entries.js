@@ -23,6 +23,16 @@ const entries = [{
             'api'
         ]
     }
+},
+{
+    method: 'DELETE',
+    path: '/entry/{id}/{userId}',
+    handler: functions.removeEntry,
+    options: {
+        tags: [
+            'api'
+        ]
+    }
 }
 ];
 
