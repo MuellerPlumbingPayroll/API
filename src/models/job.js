@@ -1,13 +1,10 @@
-class Job{
-    constructor(id,clientName,address,isActive){
+const Joi = require('joi');
 
-        this.id = id; //number
-        this.clientName = clientName; //string
-        this.address = address; //string
-        this.isActive = isActive; //bool
-    }
-}
+const jobSchema = Joi.object().keys({
+    id: Joi.string().allow(null).required(),
+    clientName: Joi.string().required(),
+    address: Joi.string().min(5).max(140).required(),
+    isActive: Joi.boolean().required()
+});
 
-
-
-export default Job;
+export default jobSchema;
