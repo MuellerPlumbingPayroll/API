@@ -24,6 +24,16 @@ const costCodes = [{
             'api'
         ]
     }
+},
+{
+    method: 'DELETE',
+    path: '/cost-code/{id}',
+    handler: functions.removeCostCode,
+    options: {
+        tags: [
+            'api'
+        ]
+    }
 }
 ];
 

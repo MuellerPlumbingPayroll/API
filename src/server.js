@@ -24,7 +24,10 @@ db.settings({ timestampsInSnapshots: true });
 const server = new Hapi.Server({
     //host: 'localhost',
     host: '0.0.0.0', //For Deploy
-    port: process.env.PORT
+    port: process.env.PORT,
+    routes:{
+        cors: true
+    }
 });
 
 (async () => {
@@ -59,7 +62,7 @@ const server = new Hapi.Server({
         HapiSwaggerConfig
     ]);
 
-    //console.log(routes);
+    // console.log(routes);
 
     // require routes
     await server.route(routes);
