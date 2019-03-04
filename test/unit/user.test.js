@@ -154,7 +154,12 @@ lab.experiment('when deleting a user', () => {
                 doc() {
 
                     return {
-                        delete: Sinon.stub().returns(Promise.reject())
+                        collection() {
+
+                            return {
+                                get: Sinon.stub().returns(Promise.reject())
+                            };
+                        }
                     };
                 }
             };
