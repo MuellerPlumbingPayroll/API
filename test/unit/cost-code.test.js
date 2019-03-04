@@ -91,7 +91,7 @@ lab.experiment('When adding cost-codes', () => {
 
     lab.test('should successfully add cost-code if payload is valid.', async () => {
 
-        const fakeCostCode = { code: 9999, description: 'fake code description.' };
+        const fakeCostCode = { code: '22-100', codeGroup: 'code group 44', description: 'fake code description.' };
 
         // Stub adding a cost-code to firebase
         const firebaseStub = Sinon.stub(Server.db, 'collection').withArgs('cost-codes').callsFake(() => {
@@ -120,5 +120,62 @@ lab.experiment('When adding cost-codes', () => {
 
         Sinon.assert.calledOnce(firebaseStub);
         Code.expect(res.statusCode).to.equal(201); // Expect Created HTTP response
+    });
+});
+
+lab.experiment('when deleting a cost-code', () => {
+
+    lab.test('should return 500 status code if error occurs', async () => {
+
+        const deleteStub = Sinon.stub(Server.db, 'collection').withArgs('cost-codes').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        delete: Sinon.stub().returns(Promise.reject())
+                    };
+                }
+            };
+        });
+
+        const injectOptions = {
+            method: 'DELETE',
+            url: '/cost-code/fakeCodeId'
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        deleteStub.parent.restore();
+
+        Sinon.assert.calledOnce(deleteStub);
+        Code.expect(res.statusCode).to.equal(500);
+    });
+
+    lab.test('should return OK status code if cost-code deleted successfully', async () => {
+
+        const deleteStub = Sinon.stub(Server.db, 'collection').withArgs('cost-codes').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        delete: Sinon.stub().returns(Promise.resolve())
+                    };
+                }
+            };
+        });
+
+        const injectOptions = {
+            method: 'DELETE',
+            url: '/cost-code/fakeCodeId'
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        deleteStub.parent.restore();
+
+        Sinon.assert.calledOnce(deleteStub);
+        Code.expect(res.statusCode).to.equal(200);
     });
 });
