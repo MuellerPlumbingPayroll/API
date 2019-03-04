@@ -44,15 +44,26 @@ functions.getUsers = async (request, h) => {
 
 // When deleting a user, the user's entries subcollection will not be deleted automatically
 // Firebase does not have functionality to delete an entire collection.
-// Completely deleting a user will require retrieve all entries for a user and deleting them manually
+// Completely deleting a user requires retrieving all entries for a user and deleting the entries manually.
+// Once all entries have been deleted the user can be deleted.
 functions.removeUser = async (request, h) => {
 
     const server = require('../server.js');
 
-    const id = request.params.id;
+    const id = request.params.id; // user id
 
     try {
-        // delete the user's entries first
+        // get all entries for user
+        const entriesSnapshot = await server.db.collection('users').doc(id).collection('entries').get();
+        const entryIds = entriesSnapshot.docs.map((doc) => doc.id);
+
+        // delete user's entries
+        await entryIds.forEach((entryId) => {
+
+            server.db.collection('users').doc(id).collection('entries').doc(entryId).delete();
+        });
+
+        // delete the user
         await server.db.collection('users').doc(id).delete();
 
         return h.response();
@@ -61,15 +72,5 @@ functions.removeUser = async (request, h) => {
         return new Boomify(err);
     }
 };
-
-// const deleteUserEntries = function (userId) {
-
-//     const server = require('../server.js');
-
-//     const snapshot = server.db.collection('users').doc(userId).collection('entries').get();
-//     const entryIds = snapshot.docs.map((doc) => doc.id );
-//     console.log('ids to delete: ', entryIds);
-
-// };
 
 export default functions;
