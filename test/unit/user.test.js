@@ -115,33 +115,36 @@ lab.experiment('When adding a user', () => {
         Sinon.assert.calledOnce(firebaseStub);
         Code.expect(res.statusCode).to.equal(201); // Expect Created HTTP response
     });
+});
 
-    lab.test('should delete user if user exists', async () => {
+lab.experiment('when deleting a user', () => {
 
-        const firebaseStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+    // lab.test('should delete user if user exists', async () => {
 
-            return {
-                doc() {
+    //     const firebaseStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
 
-                    return {
-                        delete: Sinon.stub()
-                    };
-                }
-            };
-        });
+    //         return {
+    //             doc() {
 
-        const injectOptions = {
-            method: 'DELETE',
-            url: '/users/fakeUserId'
-        };
+    //                 return {
+    //                     delete: Sinon.stub()
+    //                 };
+    //             }
+    //         };
+    //     });
 
-        const res = await Server.server.inject(injectOptions);
+    //     const injectOptions = {
+    //         method: 'DELETE',
+    //         url: '/users/fakeUserId'
+    //     };
 
-        firebaseStub.parent.restore();
+    //     const res = await Server.server.inject(injectOptions);
 
-        Sinon.assert.calledOnce(firebaseStub);
-        Code.expect(res.statusCode).to.equal(200);
-    });
+    //     firebaseStub.parent.restore();
+
+    //     Sinon.assert.calledOnce(firebaseStub);
+    //     Code.expect(res.statusCode).to.equal(200);
+    // });
 
     lab.test('should return 500 if an error occurs while deleting user', async () => {
 
