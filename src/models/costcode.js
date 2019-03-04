@@ -5,7 +5,7 @@ const descriptionMinLength = 5;
 const descriptionMaxLength = 140;
 
 const costCodeSchema = Joi.object().keys({
-    code: Joi.string().required().max(codeMaxLength),
+    code: Joi.string().regex(/^\d+-\d+$/).required().max(codeMaxLength),
     codeGroup: Joi.string().required(),
     description: Joi.string().min(descriptionMinLength).max(descriptionMaxLength).required()
 });
