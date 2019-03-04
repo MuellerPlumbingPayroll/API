@@ -2,8 +2,7 @@
 const Joi = require('joi');
 
 const userSchema = Joi.object().keys({
-    email: Joi.string().email().required(),
-    googleToken: Joi.string().allow(null).default(null),
+    email: Joi.string().regex(/^[a-z0-9](\.?[a-z0-9]){5,}@gmail\.com$/i).required(),
     isActive: Joi.boolean().required(),
     dateToRemove: Joi.date().default(null)
 });

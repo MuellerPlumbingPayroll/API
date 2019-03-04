@@ -10,17 +10,15 @@ functions.addUser = async (request, h) => {
 
     // Add new user to users colection
     try {
-        const userDoc = await server.db.collection('users').add({
+        await server.db.collection('users').add({
             email: payLoad.email,
-            googleToken: payLoad.googleToken,
             isActive: payLoad.isActive,
             dateToRemove: payLoad.dateToRemove
         });
 
-        return h.response(userDoc).code(201); // return created status code
+        return h.response().code(201); // return created status code
     }
     catch (err) {
-        console.log(err);
         return new Boomify(err);
     }
 };
