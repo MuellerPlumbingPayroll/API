@@ -59,10 +59,8 @@ lab.experiment('When adding an entry', () => {
             costCode: '22-222',
             timeWorked: 3,
             jobDate: now,
-            latitudeCreated: null,
-            latitudeUpdated: null,
-            longitudeCreated: null,
-            longitudeUpdated: null
+            latitude: null,
+            longitude: null
         };
 
         const injectOptions = {
@@ -113,10 +111,8 @@ lab.experiment('When adding an entry', () => {
             costCode: '22-222',
             timeWorked: 3,
             jobDate: now,
-            latitudeCreated: null,
-            latitudeUpdated: null,
-            longitudeCreated: null,
-            longitudeUpdated: null
+            latitude: null,
+            longitude: null
         };
 
         const injectOptions = {
