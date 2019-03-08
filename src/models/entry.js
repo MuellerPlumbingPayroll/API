@@ -11,10 +11,8 @@ const EntrySchema = Joi.object().keys({
     jobDate: Joi.date().required(),
     timeWorked: Joi.number().min(0).max(maxNumberHours).required(),
     // Location
-    latitudeCreated: Joi.number().min(-90).max(90).allow(null).required(),
-    latitudeUpdated: Joi.number().min(-90).max(90).allow(null).required(),
-    longitudeCreated: Joi.number().min(-180).max(180).allow(null).required(),
-    longitudeUpdated: Joi.number().min(-180).max(180).allow(null).required()
+    latitude: Joi.number().min(-90).max(90).allow(null).required(),
+    longitude: Joi.number().min(-180).max(180).allow(null).required()
 });
 
 export default EntrySchema;
