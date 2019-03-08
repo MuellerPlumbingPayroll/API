@@ -6,6 +6,7 @@ const Vision      = require('vision');
 const HapiSwagger = require('hapi-swagger');
 const Pack        = require('../package.json');
 const Admin = require('firebase-admin');
+const AuthBearer = require('hapi-auth-bearer-token');
 
 import routes from './routes/index';
 
@@ -19,6 +20,7 @@ const config = {
 Admin.initializeApp(config);
 
 const db = Admin.firestore();
+const auth = Admin.auth();
 db.settings({ timestampsInSnapshots: true });
 
 const server = new Hapi.Server({
@@ -54,7 +56,28 @@ const server = new Hapi.Server({
             securityDefinitions: {}
         }
     };
+    await server.register(AuthBearer);
+    server.auth.strategy('simple', 'bearer-access-token', {
+        allowQueryToken: true,              // optional, false by default
+        validate: async (request, token, h) => {
 
+            let isValid = false;
+            let credentials = {};
+            try {
+                const profile = await auth.verifyIdToken(token);
+                isValid = true;
+
+                credentials = profile;
+            }
+            catch (e){
+            }
+
+            // here is where you validate your token
+            // comparing with token from your database for example
+
+            return { isValid, credentials };
+        }
+    });
     /* register plugins */
     await server.register([
         Inert,
