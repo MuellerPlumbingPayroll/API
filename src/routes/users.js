@@ -3,7 +3,7 @@ import userSchema from '../models/user.js';
 
 const users = [{
     method: 'POST',
-    path: '/users',
+    path: '/users/{id?}',
     handler: functions.addUser,
     options:{
         tags: [
