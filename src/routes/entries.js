@@ -3,7 +3,7 @@ import EntrySchema from '../models/entry.js';
 
 const entries = [{
     method: 'POST',
-    path: '/entry',
+    path: '/entry/{userId}/{entryId?}',
     handler: functions.addEntry,
     options:{
         tags: [
