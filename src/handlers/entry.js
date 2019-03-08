@@ -25,6 +25,10 @@ functions.addEntry = async (request, h) => {
         else {
 
             const entryRef = await server.db.collection('users').doc(userId).collection('entries').doc(entryId);
+            // Don't update location
+            delete entryInfo.latitude;
+            delete entryInfo.longitude;
+
             entryInfo.timeUpdated = now;
             entryRef.update(entryInfo);
         }
