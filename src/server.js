@@ -65,6 +65,7 @@ const server = new Hapi.Server({
             let credentials = {};
             try {
                 const profile = await auth.verifyIdToken(token);
+                const email = profile.email;
                 isValid = true;
 
                 credentials = profile;
