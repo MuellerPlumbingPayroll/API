@@ -50,7 +50,7 @@ functions.getUserEntries = async (request, h) => {
     try {
         const entryRefs = await server.db.collection('users').doc(userId).collection('entries').get();
         if (entryRefs.empty) {
-            return {};
+            return [];
         }
 
         return entryRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
