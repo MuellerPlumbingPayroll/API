@@ -55,8 +55,12 @@ lab.experiment('When adding an entry', () => {
 
         const timeEntryInfo = {
             jobType: 'Other',
-            jobDescription: 'fake job',
-            costCode: '22-222',
+            job: {
+                id: 'jhbhuikjnbgu34',
+                clientName: '9d8cuytytu4j',
+                address: '4444 2nd Ave',
+                isActive: true
+            },
             timeWorked: 3,
             jobDate: now,
             latitude: null,
@@ -107,8 +111,12 @@ lab.experiment('When adding an entry', () => {
 
         const timeEntryInfo = {
             jobType: 'Other',
-            jobDescription: 'fake job',
-            costCode: '22-222',
+            job: {
+                id: 'jhbhuikjnbgu34',
+                clientName: '9d8cuytytu4j',
+                address: '4444 2nd Ave',
+                isActive: true
+            },
             timeWorked: 3,
             jobDate: now,
             latitude: null,
