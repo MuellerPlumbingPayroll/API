@@ -57,6 +57,7 @@ lab.experiment('When adding an entry', () => {
             jobType: 'Other',
             job: {
                 id: 'jhbhuikjnbgu34',
+                jobNumber: '111-1111',
                 clientName: '9d8cuytytu4j',
                 address: '4444 2nd Ave',
                 isActive: true
@@ -113,6 +114,7 @@ lab.experiment('When adding an entry', () => {
             jobType: 'Other',
             job: {
                 id: 'jhbhuikjnbgu34',
+                jobNumber: '111-1111',
                 clientName: '9d8cuytytu4j',
                 address: '4444 2nd Ave',
                 isActive: true
