@@ -76,12 +76,12 @@ lab.experiment('When adding a user', () => {
 
     lab.test('should return 400 status code if payload is missing required attributes.', async () => {
 
-        const missingCodePayLoad = { googleToken: 'qwerty12345' };
+        const missingAttrs = { email: 'qwerty12345@gmail.com' };
 
         const injectOptions = {
             method: 'POST',
             url: '/users',
-            payload: missingCodePayLoad
+            payload: missingAttrs
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -91,7 +91,7 @@ lab.experiment('When adding a user', () => {
 
     lab.test('should successfully add a new user if payload is validated.', async () => {
 
-        const fakeNewUser = { email: 'fakeUser@gmail.com', isActive: true };
+        const fakeNewUser = { email: 'fakeUser@gmail.com', firstName: 'Bob', lastName: 'Builder', isActive: true };
 
         // Stub adding a user to firebase
         const firebaseStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
@@ -118,7 +118,7 @@ lab.experiment('When adding a user', () => {
 
     lab.test('should successfully updated an existing user if payload is validated', async () => {
 
-        const fakeExistingUser = { email: 'fakeUser@gmail.com', isActive: false };
+        const fakeExistingUser = { email: 'fakeUser@gmail.com', firstName: 'Bob', lastName: 'Builder', isActive: false };
         const fakeUserId = '7ujhgyujnbhdjsfg4wraf';
 
         // Stub adding a user to firebase
