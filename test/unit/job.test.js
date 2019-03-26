@@ -92,8 +92,8 @@ lab.experiment('When adding jobs', () => {
     lab.test('should successfully add new jobs if payload is validated.', async () => {
 
         const fakeJobs = [
-            { id: null, clientName: 'Bob', address: '3498 Test St.', isActive: true },
-            { id: null, clientName: 'John', address: '876 Qwerty Ave.', isActive: true }
+            { id: null, jobNumber: '111-1111', clientName: 'Bob', address: '3498 Test St.', isActive: true },
+            { id: null, jobNumber: '111-1111', clientName: 'John', address: '876 Qwerty Ave.', isActive: true }
         ];
 
         const addStub = Sinon.stub(Server.db, 'collection').withArgs('jobs').callsFake(() => {
@@ -120,8 +120,8 @@ lab.experiment('When adding jobs', () => {
     lab.test('should successfully update an existing job if payload is validated', async () => {
 
         const fakeJobs = [
-            { id: '9iuygfre456df2e', clientName: 'Bob', address: '3498 Test St.', isActive: true },
-            { id: '09876trfcvbghy6', clientName: 'John', address: '876 Qwerty Ave.', isActive: true }
+            { id: '9iuygfre456df2e', jobNumber: '111-1111', clientName: 'Bob', address: '3498 Test St.', isActive: true },
+            { id: '09876trfcvbghy6', jobNumber: '111-1111', clientName: 'John', address: '876 Qwerty Ave.', isActive: true }
         ];
 
         const updateStub = Sinon.stub(Server.db, 'collection').withArgs('jobs').callsFake(() => {
