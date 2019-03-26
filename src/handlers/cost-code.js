@@ -30,7 +30,7 @@ functions.getCostCodes = async (request, h) => {
     try {
         const snapshot = await server.db.collection('cost-codes').get(); // All documents in cost-codes collection
         if (snapshot.empty) {
-            return {};
+            return [];
         }
 
         return snapshot.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));

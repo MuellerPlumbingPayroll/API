@@ -19,15 +19,18 @@ functions.addEntry = async (request, h) => {
             entryInfo.timeCreated = now;
             entryInfo.timeUpdated = now;
 
-            await server.db.collection('users').doc(userId).collection('entries').add(entryInfo);
+            const newEntryRef = await server.db.collection('users').doc(userId).collection('entries').add(entryInfo);
+            return h.response(newEntryRef.id).code(201);
         }
-        // Update existing entry
-        else {
 
-            const entryRef = await server.db.collection('users').doc(userId).collection('entries').doc(entryId);
-            entryInfo.timeUpdated = now;
-            entryRef.update(entryInfo);
-        }
+        // Update existing entry
+        const entryRef = await server.db.collection('users').doc(userId).collection('entries').doc(entryId);
+        // Don't update location
+        delete entryInfo.latitude;
+        delete entryInfo.longitude;
+
+        entryInfo.timeUpdated = now;
+        entryRef.update(entryInfo);
 
         return h.response(entryInfo).code(201);
     }
@@ -46,7 +49,7 @@ functions.getUserEntries = async (request, h) => {
     try {
         const entryRefs = await server.db.collection('users').doc(userId).collection('entries').get();
         if (entryRefs.empty) {
-            return {};
+            return [];
         }
 
         return entryRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));

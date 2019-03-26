@@ -13,11 +13,7 @@ functions.addUser = async (request, h) => {
         // Add new user to users collection
         if (userId === undefined) {
 
-            await server.db.collection('users').add({
-                email: userInfo.email,
-                isActive: userInfo.isActive,
-                dateToRemove: userInfo.dateToRemove
-            });
+            await server.db.collection('users').add(userInfo);
         }
         // Update existing user
         else {
@@ -40,7 +36,7 @@ functions.getUsers = async (request, h) => {
     try {
         const userRefs = await server.db.collection('users').get();
         if (userRefs.empty) {
-            return {};
+            return [];
         }
 
         return userRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));

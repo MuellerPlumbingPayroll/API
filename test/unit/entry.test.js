@@ -33,6 +33,7 @@ lab.experiment('When adding an entry', () => {
 
     lab.test('should successfully add a new time entry if payload is validated', async () => {
 
+        const newEntryId = '39erufhjkdejh4g';
         const addEntryStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
 
             return {
@@ -42,7 +43,7 @@ lab.experiment('When adding an entry', () => {
                         collection() {
 
                             return {
-                                add: Sinon.stub()
+                                add: Sinon.stub().returns(newEntryId)
                             };
                         }
                     };
@@ -55,14 +56,17 @@ lab.experiment('When adding an entry', () => {
 
         const timeEntryInfo = {
             jobType: 'Other',
-            jobDescription: 'fake job',
-            costCode: '22-222',
+            job: {
+                id: 'jhbhuikjnbgu34',
+                jobNumber: '111-1111',
+                clientName: '9d8cuytytu4j',
+                address: '4444 2nd Ave',
+                isActive: true
+            },
             timeWorked: 3,
             jobDate: now,
-            latitudeCreated: null,
-            latitudeUpdated: null,
-            longitudeCreated: null,
-            longitudeUpdated: null
+            latitude: null,
+            longitude: null
         };
 
         const injectOptions = {
@@ -109,14 +113,17 @@ lab.experiment('When adding an entry', () => {
 
         const timeEntryInfo = {
             jobType: 'Other',
-            jobDescription: 'fake job',
-            costCode: '22-222',
+            job: {
+                id: 'jhbhuikjnbgu34',
+                jobNumber: '111-1111',
+                clientName: '9d8cuytytu4j',
+                address: '4444 2nd Ave',
+                isActive: true
+            },
             timeWorked: 3,
             jobDate: now,
-            latitudeCreated: null,
-            latitudeUpdated: null,
-            longitudeCreated: null,
-            longitudeUpdated: null
+            latitude: null,
+            longitude: null
         };
 
         const injectOptions = {
