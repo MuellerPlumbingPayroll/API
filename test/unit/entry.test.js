@@ -33,6 +33,7 @@ lab.experiment('When adding an entry', () => {
 
     lab.test('should successfully add a new time entry if payload is validated', async () => {
 
+        const newEntryId = '39erufhjkdejh4g';
         const addEntryStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
 
             return {
@@ -42,7 +43,7 @@ lab.experiment('When adding an entry', () => {
                         collection() {
 
                             return {
-                                add: Sinon.stub()
+                                add: Sinon.stub().returns(newEntryId)
                             };
                         }
                     };
