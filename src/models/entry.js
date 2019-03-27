@@ -9,7 +9,7 @@ const JobType = ['Construction', 'Service', 'Other'];
 const EntrySchema = Joi.object().keys({
     jobType: Joi.string().valid(JobType).required(),
     job: jobSchema,
-    costCode: costCodeSchema.default(null),
+    costCode: costCodeSchema.allow().default(null),
     jobDate: Joi.date().required(),
     timeWorked: Joi.number().min(0).max(maxNumberHours).required(),
     // Location
