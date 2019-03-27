@@ -26,7 +26,7 @@ const entries = [{
 },
 {
     method: 'DELETE',
-    path: '/entry/{id}/{userId}',
+    path: '/entry/{userId}/{entryId}',
     handler: functions.removeEntry,
     options: {
         tags: [

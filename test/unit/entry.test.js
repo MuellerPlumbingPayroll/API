@@ -255,7 +255,7 @@ lab.experiment('when deleting an entry', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: `/entry/${fakeEntryId}/${fakeUserId}`
+            url: `/entry/${fakeUserId}/${fakeEntryId}`
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -295,7 +295,7 @@ lab.experiment('when deleting an entry', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: `/entry/${fakeEntryId}/${fakeUserId}`
+            url: `/entry/${fakeUserId}/${fakeEntryId}`
         };
 
         const res = await Server.server.inject(injectOptions);
