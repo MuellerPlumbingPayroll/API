@@ -64,7 +64,7 @@ functions.removeEntry = async (request, h) => {
 
     const server = require('../server.js');
 
-    const entryId = request.params.id;
+    const entryId = request.params.entryId;
     const userId = request.params.userId;
 
     try {

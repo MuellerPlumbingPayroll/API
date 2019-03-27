@@ -3,7 +3,7 @@ import timecardSchema from '../models/timecard.js';
 
 const timecards = [{
     method: 'POST',
-    path: '/submit',
+    path: '/submit/{userId}',
     handler: functions.submit,
     options:{
         tags: [
