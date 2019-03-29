@@ -55,7 +55,7 @@ lab.experiment('When adding an entry', () => {
         const fakeUserId = 'ijhgy783i4rfivuhd';
 
         const timeEntryInfo = {
-            jobType: 'Other',
+            jobType: 'Construction',
             job: {
                 id: 'jhbhuikjnbgu34',
                 jobNumber: '111-1111',
@@ -113,13 +113,7 @@ lab.experiment('When adding an entry', () => {
 
         const timeEntryInfo = {
             jobType: 'Other',
-            job: {
-                id: 'jhbhuikjnbgu34',
-                jobNumber: '111-1111',
-                clientName: '9d8cuytytu4j',
-                address: '4444 2nd Ave',
-                isActive: true
-            },
+            job: 'Vacation',
             timeWorked: 3,
             jobDate: now,
             latitude: null,
