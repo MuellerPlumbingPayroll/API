@@ -13,13 +13,11 @@ lab.experiment('When submitting a timecard', () => {
 
         const fakeUserId = 'uedifjhy4uirfjncjd';
 
-        const invalidPayload = { // payload is missing required injured field
-            userId: fakeUserId
-        };
+        const invalidPayload = {}; // payload is missing required injured field
 
         const injectOptions = {
             method: 'POST',
-            url: '/submit',
+            url: `/submit/${fakeUserId}`,
             payload: invalidPayload
         };
 
@@ -30,8 +28,8 @@ lab.experiment('When submitting a timecard', () => {
 
     lab.test('should return 500 if error occurs while retrieving users timecared submissions', async () => {
 
+        const fakeUserId = '3behrfuvikmnfbh3j';
         const timecard = {
-            userId: '3behrfuvikmnfbh3j',
             injured: false
         };
 
@@ -49,7 +47,7 @@ lab.experiment('When submitting a timecard', () => {
 
         const injectOptions = {
             method: 'POST',
-            url: '/submit',
+            url: `/submit/${fakeUserId}`,
             payload: timecard
         };
 

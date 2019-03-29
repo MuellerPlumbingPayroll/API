@@ -8,7 +8,7 @@ const userSchema = Joi.object().keys({
     firstName: Joi.string().min(nameMinLength).max(nameMaxLength).required(),
     lastName: Joi.string().min(nameMinLength).max(nameMaxLength).required(),
     isActive: Joi.boolean().required(),
-    dateToRemove: Joi.date().default(null)
+    dateToRemove: Joi.date().allow(null).default(null)
 });
 
 export default userSchema;

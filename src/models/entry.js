@@ -5,14 +5,17 @@ const Joi = require('joi');
 
 const maxNumberHours = 16;
 const JobType = ['Construction', 'Service', 'Other'];
+const OtherJob = ['Shop', 'Vacation', 'Holiday', 'Sick', 'Unpaid Leave'];
 
 const EntrySchema = Joi.object().keys({
     jobType: Joi.string().valid(JobType).required(),
-    job: jobSchema,
-    costCode: costCodeSchema.default(null),
+    job: Joi.alternatives()
+        .when('jobType', { is: 'Construction', then: jobSchema })
+        .when('jobType', { is: 'Service', then: Joi.string() })
+        .when('jobType', { is: 'Other', then: Joi.valid(OtherJob) }),
+    costCode: costCodeSchema.allow(null),
     jobDate: Joi.date().required(),
     timeWorked: Joi.number().min(0).max(maxNumberHours).required(),
-    // Location
     latitude: Joi.number().min(-90).max(90).allow(null).required(),
     longitude: Joi.number().min(-180).max(180).allow(null).required()
 });

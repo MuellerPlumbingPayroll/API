@@ -63,11 +63,12 @@ const lastPayPeriod = () => {
 functions.submit = async (request, h) => {
 
     const timecardToSubmit = request.payload;
+    const userId = request.params.userId;
     const prevPayPeriod = await lastPayPeriod();
     const server = require('../server.js');
 
     try {
-        const userTimecardsRef = await server.db.collection('timecards').where('userId', '==', timecardToSubmit.userId).get();
+        const userTimecardsRef = await server.db.collection('timecards').where('userId', '==', userId).get();
         const timecards = userTimecardsRef.docs.map((doc) => Object.assign(doc.data()));
 
         // Check if user has already submitted timecard for previous pay period
@@ -85,6 +86,7 @@ functions.submit = async (request, h) => {
         }
 
         // Submit timecard
+        timecardToSubmit.userId = userId;
         timecardToSubmit.startDate = prevPayPeriod.startDate;
         timecardToSubmit.endDate = prevPayPeriod.endDate;
         await server.db.collection('timecards').add(timecardToSubmit);
