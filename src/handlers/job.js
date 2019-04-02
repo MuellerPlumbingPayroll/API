@@ -36,7 +36,7 @@ functions.getJobs = async (request, h) => {
     try {
         const snapshot = await server.db.collection('jobs').get();
         if (snapshot.empty) {
-            return {};
+            return [];
         }
 
         return snapshot.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));

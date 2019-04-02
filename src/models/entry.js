@@ -1,25 +1,23 @@
+import jobSchema from '../models/job.js';
+import costCodeSchema from '../models/costcode.js';
+
 const Joi = require('joi');
 
 const maxNumberHours = 16;
 const JobType = ['Construction', 'Service', 'Other'];
+const OtherJob = ['Shop', 'Vacation', 'Holiday', 'Sick', 'Unpaid Leave'];
 
 const EntrySchema = Joi.object().keys({
-    id: Joi.string().required(),
-    userId: Joi.string().required(),
-
     jobType: Joi.string().valid(JobType).required(),
-    jobDescription: Joi.string().required(),
-    costCode: Joi.string().default(null), // May not care about some cost-codes e.g. holiday
-
+    job: Joi.alternatives()
+        .when('jobType', { is: 'Construction', then: jobSchema })
+        .when('jobType', { is: 'Service', then: Joi.string() })
+        .when('jobType', { is: 'Other', then: Joi.valid(OtherJob) }),
+    costCode: costCodeSchema.allow(null),
+    jobDate: Joi.date().required(),
     timeWorked: Joi.number().min(0).max(maxNumberHours).required(),
-    timeCreated: Joi.date().required(),
-    timeUpdated: Joi.date().required(),
-
-    // Location
-    latitudeCreated: Joi.number().min(-90).max(90).default(null),
-    latitudeUpdated: Joi.number().min(-90).max(90).default(null),
-    longitudeCreated: Joi.number().min(-180).max(180).default(null),
-    longitudeUpdated: Joi.number().min(-180).max(180).default(null)
+    latitude: Joi.number().min(-90).max(90).allow(null).required(),
+    longitude: Joi.number().min(-180).max(180).allow(null).required()
 });
 
 export default EntrySchema;

@@ -4,33 +4,37 @@ const functions = Object.create({});
 
 functions.addEntry = async (request, h) => {
 
-    const payLoad = request.payload;
+    const entryInfo = request.payload;
 
-    const entryId = payLoad.id;
-    const userId = payLoad.userId;
+    const userId = request.params.userId;
+    const entryId = request.params.entryId;
+    const now = new Date();
 
     const server = require('../server.js');
 
     try {
-        // Add a new entry doccument to a users entry collection
-        await server.db.collection('users').doc(userId).collection('entries').doc(entryId).set({
-            userId: payLoad.userId,
-            jobType: payLoad.jobType,
-            jobDescription: payLoad.jobDescription,
-            costCode: payLoad.costCode,
-            timeWorked: payLoad.timeWorked,
-            timeCreated: payLoad.timeCreated,
-            timeUpdated: payLoad.timeUpdated,
-            latitudeCreated: payLoad.latitudeCreated,
-            latitudeUpdated: payLoad.latitudeUpdated,
-            longitudeCreated: payLoad.longitudeCreated,
-            longitudeUpdated: payLoad.longitudeUpdated
-        });
+        // Add new entry
+        if (entryId === undefined) {
 
-        return h.response(payLoad).code(201);
+            entryInfo.timeCreated = now;
+            entryInfo.timeUpdated = now;
+
+            const newEntryRef = await server.db.collection('users').doc(userId).collection('entries').add(entryInfo);
+            return h.response(newEntryRef.id).code(201);
+        }
+
+        // Update existing entry
+        const entryRef = await server.db.collection('users').doc(userId).collection('entries').doc(entryId);
+        // Don't update location
+        delete entryInfo.latitude;
+        delete entryInfo.longitude;
+
+        entryInfo.timeUpdated = now;
+        entryRef.update(entryInfo);
+
+        return h.response(entryInfo).code(201);
     }
     catch (err) {
-        console.log(err);
         return new Boomify(err);
     }
 };
@@ -43,12 +47,12 @@ functions.getUserEntries = async (request, h) => {
     const userId = request.params.userId;
 
     try {
-        const snapshot = await server.db.collection('users').doc(userId).collection('entries').get();
-        if (snapshot.empty) {
-            return {};
+        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').get();
+        if (entryRefs.empty) {
+            return [];
         }
 
-        return snapshot.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
+        return entryRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
     }
     catch (error) {
         return new Boomify(error);
@@ -60,7 +64,7 @@ functions.removeEntry = async (request, h) => {
 
     const server = require('../server.js');
 
-    const entryId = request.params.id;
+    const entryId = request.params.entryId;
     const userId = request.params.userId;
 
     try {

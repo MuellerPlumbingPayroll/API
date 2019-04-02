@@ -4,17 +4,23 @@ const functions = Object.create({});
 
 functions.addUser = async (request, h) => {
 
-    const payLoad = request.payload;
+    const userInfo = request.payload;
+    const userId = request.params.id;
 
     const server = require('../server.js');
 
-    // Add new user to users colection
     try {
-        await server.db.collection('users').add({
-            email: payLoad.email,
-            isActive: payLoad.isActive,
-            dateToRemove: payLoad.dateToRemove
-        });
+        // Add new user to users collection
+        if (userId === undefined) {
+
+            await server.db.collection('users').add(userInfo);
+        }
+        // Update existing user
+        else {
+
+            const userRef = await server.db.collection('users').doc(userId);
+            userRef.update(userInfo);
+        }
 
         return h.response().code(201); // return created status code
     }
@@ -28,12 +34,12 @@ functions.getUsers = async (request, h) => {
     const server = require('../server.js');
 
     try {
-        const snapshot = await server.db.collection('users').get();
-        if (snapshot.empty) {
-            return {};
+        const userRefs = await server.db.collection('users').get();
+        if (userRefs.empty) {
+            return [];
         }
 
-        return snapshot.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
+        return userRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
     }
     catch (err) {
         return new Boomify(err);

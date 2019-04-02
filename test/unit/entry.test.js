@@ -9,12 +9,11 @@ const lab = exports.lab = Lab.script();
 
 lab.experiment('When adding an entry', () => {
 
-    lab.test('should return 400 status code if payload is missing entry attributes.', async () => {
+    lab.test('should return 400 status code if payload is not validated', async () => {
 
-        // Missing time keys
-        const missingAttrsPayLoad = {
-            id: 'ijhgyujnh3456tfds',
-            userId: 'fakeUser',
+        const fakeUserId = 'uedifjhy4uirfjncjd';
+
+        const invalidPayload = { // payload is missing required attributes
             jobType: 'Other',
             jobDescription: 'clogged fake toilet',
             costCode: 'fake code'
@@ -22,8 +21,8 @@ lab.experiment('When adding an entry', () => {
 
         const injectOptions = {
             method: 'POST',
-            url: '/entry',
-            payload: missingAttrsPayLoad
+            url: `/entry/${fakeUserId}`,
+            payload: invalidPayload
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -31,39 +30,62 @@ lab.experiment('When adding an entry', () => {
         Code.expect(res.statusCode).to.equal(400); // Expect Bad Request HTTP response
     });
 
-    lab.test('should return 400 status code if values do not match entry shema', async () => {
 
-        const created = '2015-01-01T15:23:42';
-        const updated = '2016-01-01T15:23:42';
+    lab.test('should successfully add a new time entry if payload is validated', async () => {
 
-        const malformedAttrs = {
-            id: 'ijhgyujnh3456tfds',
-            userId: 1234, // should be a string
-            jobType: 'Other',
-            jobDescription: 'clogged fake toilet',
-            costCode: 'fake code',
-            timeWorked: 4,
-            timeCreated: created,
-            timeUpdated: updated,
-            latitudeCreated: 85,
-            latitudeUpdated: 85,
-            longitudeCreated: -177,
-            longitudeUpdated: -160
+        const newEntryId = '39erufhjkdejh4g';
+        const addEntryStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        collection() {
+
+                            return {
+                                add: Sinon.stub().returns(newEntryId)
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+        const now = new Date();
+        const fakeUserId = 'ijhgy783i4rfivuhd';
+
+        const timeEntryInfo = {
+            jobType: 'Construction',
+            job: {
+                id: 'jhbhuikjnbgu34',
+                jobNumber: '111-1111',
+                clientName: '9d8cuytytu4j',
+                address: '4444 2nd Ave',
+                isActive: true
+            },
+            timeWorked: 3,
+            jobDate: now,
+            latitude: null,
+            longitude: null
         };
 
         const injectOptions = {
             method: 'POST',
-            url: '/entry',
-            payload: malformedAttrs
+            url: `/entry/${fakeUserId}`,
+            payload: timeEntryInfo
         };
 
         const res = await Server.server.inject(injectOptions);
-        Code.expect(res.statusCode).to.equal(400); // Expect Bad Request HTTP response
+
+        addEntryStub.parent.restore();
+
+        Sinon.assert.calledOnce(addEntryStub);
+        Code.expect(res.statusCode).to.equal(201);
     });
 
-    lab.test('should successfully add time entry if payload is valid', async () => {
+    lab.test('should successfully update an existing entry if payload is validated', async () => {
 
-        const firebaseStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+        const updateEntryStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
 
             return {
                 doc() {
@@ -75,7 +97,7 @@ lab.experiment('When adding an entry', () => {
                                 doc() {
 
                                     return {
-                                        set: Sinon.stub()
+                                        update: Sinon.stub()
                                     };
                                 }
                             };
@@ -85,32 +107,32 @@ lab.experiment('When adding an entry', () => {
             };
         });
 
-        const created = '2015-01-01T15:23:42';
-        const updated = '2016-01-01T15:23:42';
+        const now = new Date();
+        const fakeUserId = 'ijhgy783i4rfivuhd';
+        const fakeEntryId = 's8cxutv7e8riuktht';
 
-        const timeEntry = {
-            id: '34rfdergfd',
-            userId: 'fakeUser',
+        const timeEntryInfo = {
             jobType: 'Other',
-            jobDescription: 'fake job',
-            costCode: '22-222',
+            job: 'Vacation',
             timeWorked: 3,
-            timeCreated: created,
-            timeUpdated: updated
+            jobDate: now,
+            latitude: null,
+            longitude: null
         };
 
         const injectOptions = {
             method: 'POST',
-            url: '/entry',
-            payload: timeEntry
+            url: `/entry/${fakeUserId}/${fakeEntryId}`,
+            payload: timeEntryInfo
         };
 
         const res = await Server.server.inject(injectOptions);
 
-        firebaseStub.parent.restore();
+        updateEntryStub.parent.restore();
 
-        Sinon.assert.calledOnce(firebaseStub);
+        Sinon.assert.calledOnce(updateEntryStub);
         Code.expect(res.statusCode).to.equal(201);
+
     });
 });
 
@@ -135,9 +157,11 @@ lab.experiment('when retrieving entries', () => {
             };
         });
 
+        const fakeUserId = '93nmflkajsdf';
+
         const injectOptions = {
             method: 'GET',
-            url: '/entries/fakeUserId'
+            url: `/entries/${fakeUserId}`
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -178,9 +202,11 @@ lab.experiment('when retrieving entries', () => {
 
         });
 
+        const fakeUserId = '93nmflkajsdf';
+
         const injectOptions = {
             method: 'GET',
-            url: '/entries/fakeUserId'
+            url: `/entries/${fakeUserId}`
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -218,9 +244,12 @@ lab.experiment('when deleting an entry', () => {
             };
         });
 
+        const fakeEntryId = 'ijdhuejwrt98u';
+        const fakeUserId = 'wjneroi3j45fve';
+
         const injectOptions = {
             method: 'DELETE',
-            url: '/entry/fakeEntryId/fakeUserId'
+            url: `/entry/${fakeUserId}/${fakeEntryId}`
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -255,9 +284,12 @@ lab.experiment('when deleting an entry', () => {
             };
         });
 
+        const fakeEntryId = 'ijdhuejwrt98u';
+        const fakeUserId = 'wjneroi3j45fve';
+
         const injectOptions = {
             method: 'DELETE',
-            url: '/entry/fakeEntryId/fakeUserId'
+            url: `/entry/${fakeUserId}/${fakeEntryId}`
         };
 
         const res = await Server.server.inject(injectOptions);

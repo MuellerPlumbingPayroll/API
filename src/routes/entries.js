@@ -3,7 +3,7 @@ import EntrySchema from '../models/entry.js';
 
 const entries = [{
     method: 'POST',
-    path: '/entry',
+    path: '/entry/{userId}/{entryId?}',
     handler: functions.addEntry,
     options:{
         tags: [
@@ -26,7 +26,7 @@ const entries = [{
 },
 {
     method: 'DELETE',
-    path: '/entry/{id}/{userId}',
+    path: '/entry/{userId}/{entryId}',
     handler: functions.removeEntry,
     options: {
         tags: [
