@@ -1,15 +1,18 @@
-// Makes a request to firestore for a user document with the provided userId.
-// If database request completes without failure then user exists, otherwise
-// the provided userId does not belong to an existing user. Its important to
-// note that the occurrence of an error is not necessarily because doc with
-// id = userId does not exist. It's possible the error occured with the server or database.
+// Makes a request to firebase for a user document with the provided userId.
+// Note: if a server error occurs then function returns false. Depending on
+// how userExists is handled http error could be misleading.
 export const userExists = async (userId) => {
 
     const server = require('../server.js');
 
     try {
-        await server.db.collection('users').doc(userId);
-        return true;
+
+        const userRef = await server.db.collection('users').doc(userId).get();
+        if (userRef.exists) {
+            return true;
+        }
+
+        return false;
     }
     catch (err) {
         return false;
