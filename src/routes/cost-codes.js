@@ -7,7 +7,8 @@ const costCodes = [{
     handler: functions.addCostCode,
     options:{
         tags: [
-            'api'
+            'api',
+            'auth'
         ],
         validate: {
             payload: costCodeSchema

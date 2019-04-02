@@ -53,7 +53,15 @@ const server = new Hapi.Server({
                 { name: 'api' }
             ],
             documentationPath: '/',
-            securityDefinitions: {}
+            securityDefinitions: {
+                'Bearer': {
+                    'type': 'apiKey',
+                    'name': 'Authorization',
+                    'in': 'header'
+                }
+            },
+            security: [{ 'Bearer': [] }]
+
         }
     };
     await server.register(AuthBearer);

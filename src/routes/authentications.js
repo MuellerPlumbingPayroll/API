@@ -7,6 +7,7 @@ const auth = [{
     path: '/authenticate/{email}',
     handler: functions.authenticateEmail,
     options: {
+        auth:false,
         tags: [
             'api'
         ],
