@@ -1,4 +1,7 @@
 import Boomify from 'boom';
+import Boom from 'boom';
+import { currentPayPeriod } from '../utils/payperiod';
+import { userExists } from '../utils/database';
 
 const functions = Object.create({});
 
@@ -46,13 +49,21 @@ functions.getUserEntries = async (request, h) => {
 
     const userId = request.params.userId;
 
+    if (!(await userExists(userId))) {
+        return Boom.notFound('User does not exist.');
+    }
+
+    const currPayPeriod = await currentPayPeriod();
+
     try {
-        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').get();
+
+        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').where('timeCreated', '>=', currPayPeriod.startDate).get();
         if (entryRefs.empty) {
             return [];
         }
 
-        return entryRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
+        const currentPPEntries = entryRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
+        return h.response(currentPPEntries).code(200);
     }
     catch (error) {
         return new Boomify(error);
