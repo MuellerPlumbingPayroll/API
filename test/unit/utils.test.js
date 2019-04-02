@@ -3,6 +3,7 @@ const Lab = require('lab');
 const Server = require('../../src/server');
 const Sinon = require('sinon');
 const UtilsDB = require('../../src/utils/database');
+const UtilsPP = require('../../src/utils/payperiod');
 
 const lab = exports.lab = Lab.script();
 
@@ -75,5 +76,18 @@ lab.experiment('When checking if a user exists', () => {
 
         Sinon.assert.calledOnce(userRefStub);
         Code.expect(res).to.equal(false);
+    });
+});
+
+lab.experiment('When calculating pay periods', () => {
+
+    lab.test('current pay period should start on wednesday and end a tuesday', async () => {
+
+        const wednesday = 3;
+        const tuesday = 2;
+        const res = await UtilsPP.currentPayPeriod();
+
+        Code.expect(res.startDate.getDay()).to.equal(wednesday);
+        Code.expect(res.endDate.getDay()).to.equal(tuesday);
     });
 });
