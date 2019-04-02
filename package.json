@@ -6,6 +6,7 @@
   "scripts": {
     "build": "browserify ./src/server.js -x @google-cloud/storage -t babelify --presets [env] -o out/bundle.js",
     "start": "node bin/babelify.js ./src/server.js",
+    "debug": "nodemon --watch src bin/babelify.js ./src/server.js",
     "node-start": "nodemon --watch src bin/babelify.js ./src/server.js",
     "test": "lab -T node_modules/lab-babel -v -l -c -L  -t 90",
     "testloc": "node node_modules/lab/bin/lab -v -L -C -c -t 0",

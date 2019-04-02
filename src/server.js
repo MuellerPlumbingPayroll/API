@@ -62,12 +62,12 @@ const server = new Hapi.Server({
         allowQueryToken: true,              // optional, false by default
         validate: async (request, token, h) => {
 
-            const profile = await auth.verifyIdToken(token);
-            const emailToAuthenticate = profile.email;
             let isValid = false;
-
             let credentials = {};
             try {
+                const profile = await auth.verifyIdToken(token);
+                const emailToAuthenticate = profile.email;
+
                 const userRefs = await server.db.collection('users').get();
 
                 // Keep id and user data
