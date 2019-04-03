@@ -52,6 +52,11 @@ lab.experiment('When adding an entry', () => {
             };
         });
 
+        const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
+
+            return Promise.resolve(true);
+        });
+
         const now = new Date();
         const fakeUserId = 'ijhgy783i4rfivuhd';
 
@@ -79,6 +84,7 @@ lab.experiment('When adding an entry', () => {
         const res = await Server.server.inject(injectOptions);
 
         addEntryStub.parent.restore();
+        userExistsStub.restore();
 
         Sinon.assert.calledOnce(addEntryStub);
         Code.expect(res.statusCode).to.equal(201);
@@ -108,6 +114,11 @@ lab.experiment('When adding an entry', () => {
             };
         });
 
+        const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
+
+            return Promise.resolve(true);
+        });
+
         const now = new Date();
         const fakeUserId = 'ijhgy783i4rfivuhd';
         const fakeEntryId = 's8cxutv7e8riuktht';
@@ -130,6 +141,7 @@ lab.experiment('When adding an entry', () => {
         const res = await Server.server.inject(injectOptions);
 
         updateEntryStub.parent.restore();
+        userExistsStub.restore();
 
         Sinon.assert.calledOnce(updateEntryStub);
         Code.expect(res.statusCode).to.equal(201);
@@ -330,6 +342,11 @@ lab.experiment('when deleting an entry', () => {
             };
         });
 
+        const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
+
+            return Promise.resolve(true);
+        });
+
         const fakeEntryId = 'ijdhuejwrt98u';
         const fakeUserId = 'wjneroi3j45fve';
 
@@ -341,6 +358,7 @@ lab.experiment('when deleting an entry', () => {
         const res = await Server.server.inject(injectOptions);
 
         deleteStub.parent.restore();
+        userExistsStub.restore();
 
         Sinon.assert.calledOnce(deleteStub);
         Code.expect(res.statusCode).to.equal(200);
