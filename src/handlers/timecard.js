@@ -1,17 +1,43 @@
 import Boomify from 'boom';
-import { lastPayPeriod } from '../utils/payperiod';
+import Boom from 'boom';
+import { lastPayPeriod, currentPayPeriod } from '../utils/payperiod';
+import { userExists, getEntriesForPayPeriod, payPeriodSubmitted, submitTimecard } from '../utils/database';
 
 const functions = Object.create({});
 
 functions.submit = async (request, h) => {
 
-    const timecardToSubmit = request.payload;
+    let submission = request.payload;
     const userId = request.params.userId;
-    const prevPayPeriod = await lastPayPeriod();
 
     const server = require('../server.js');
 
     try {
+
+        if (!(await userExists(userId))) {
+            return Boom.notFound('User does not exist.');
+        }
+
+        const prevPayPeriod = await lastPayPeriod();
+        const currPayPeriod = await currentPayPeriod();
+
+        const entriesSnapshot = await getEntriesForPayPeriod(userId, prevPayPeriod);
+
+        // This handles new users, and users that have not submitted time entries for an entire pay period or longer
+        if (entriesSnapshot.empty) {
+
+            const currentPPSubmitted = await payPeriodSubmitted(userId, currPayPeriod);
+            if (currentPPSubmitted) {
+                return h.response();
+            }
+
+            submission = await submitTimecard(userId, (currPayPeriod), submission);
+            return h.response(submission).code(201);
+        }
+
+        // const start = new Date();
+
+        // REFACTOR: Consider querying only for previous pay period and current pay period
         const userTimecardsRef = await server.db.collection('timecards').where('userId', '==', userId).get();
         const timecards = userTimecardsRef.docs.map((doc) => Object.assign(doc.data()));
 
@@ -24,18 +50,24 @@ functions.submit = async (request, h) => {
                 startDate.getMonth() === prevPayPeriod.startDate.getMonth() &&
                 startDate.getFullYear() === prevPayPeriod.startDate.getFullYear()) {
 
-                // Ignore request
-                return h.response();
+                // If current pay period is submitted ignore request
+                const currentPPSubmitted = await payPeriodSubmitted(userId, currPayPeriod);
+                if (currentPPSubmitted) {
+                    return h.response();
+                }
+
+                // Submitting timecard before end of pay period.
+                submission = await submitTimecard(userId, currPayPeriod, submission);
+                return h.response(submission).code(201);
             }
         }
 
-        // Submit timecard
-        timecardToSubmit.userId = userId;
-        timecardToSubmit.startDate = prevPayPeriod.startDate;
-        timecardToSubmit.endDate = prevPayPeriod.endDate;
-        await server.db.collection('timecards').add(timecardToSubmit);
+        // const end = new Date();
+        // console.log('Execution time: ', (end - start), ' ms');
 
-        return h.response(timecardToSubmit).code(201);
+        // Submitting timecard for previous pay period
+        submission = await submitTimecard(userId, prevPayPeriod, submission);
+        return h.response(submission).code(201);
     }
     catch (error) {
         return new Boomify(error);
