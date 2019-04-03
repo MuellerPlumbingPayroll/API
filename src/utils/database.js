@@ -28,10 +28,10 @@ export const submitTimecard = async (userId, payPeriod, submission) => {
 
     try {
         await server.db.collection('timecards').add(submission);
-        Promise.resolve(submission);
+        return Promise.resolve(submission);
     }
     catch (error) {
-        Promise.reject(error);
+        return Promise.reject(error);
     }
 };
 
