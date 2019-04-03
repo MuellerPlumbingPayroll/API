@@ -55,27 +55,33 @@ lab.experiment('When checking if a user exists', () => {
         Code.expect(res).to.equal(false);
     });
 
-    lab.test('should return false if error occurs when getting user', async () => {
+    lab.test('should return an error if getting user fails', async () => {
 
+        const fakeError = new Error('Fake server error.');
         const userRefStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
 
             return {
                 doc() {
 
                     return {
-                        get: Sinon.stub().returns(Promise.reject())
+                        get: Sinon.stub().returns(Promise.reject(fakeError))
                     };
                 }
             };
         });
 
         const fakeId = '03oiejhufirekmnrjkl3';
-        const res = await UtilsDB.userExists(fakeId);
+
+        try {
+            await UtilsDB.userExists(fakeId);
+        }
+        catch (err) {
+            Code.expect(err).to.equal(fakeError);
+        }
 
         userRefStub.parent.restore();
 
         Sinon.assert.calledOnce(userRefStub);
-        Code.expect(res).to.equal(false);
     });
 });
 
