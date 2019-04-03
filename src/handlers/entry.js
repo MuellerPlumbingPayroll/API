@@ -16,6 +16,11 @@ functions.addEntry = async (request, h) => {
     const server = require('../server.js');
 
     try {
+
+        if (!(await userExists(userId))) {
+            return Boom.notFound('User does not exist.');
+        }
+
         // Add new entry
         if (entryId === undefined) {
 
@@ -48,14 +53,13 @@ functions.getUserEntries = async (request, h) => {
     const server = require('../server.js');
 
     const userId = request.params.userId;
-
-    if (!(await userExists(userId))) {
-        return Boom.notFound('User does not exist.');
-    }
-
     const currPayPeriod = await currentPayPeriod();
 
     try {
+
+        if (!(await userExists(userId))) {
+            return Boom.notFound('User does not exist.');
+        }
 
         const entryRefs = await server.db.collection('users').doc(userId).collection('entries').where('timeCreated', '>=', currPayPeriod.startDate).get();
         if (entryRefs.empty) {
@@ -79,6 +83,11 @@ functions.removeEntry = async (request, h) => {
     const userId = request.params.userId;
 
     try {
+
+        if (!(await userExists(userId))) {
+            return Boom.notFound('User does not exist.');
+        }
+
         await server.db.collection('users').doc(userId).collection('entries').doc(entryId).delete();
 
         return h.response(); // Will return OK
