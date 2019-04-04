@@ -50,6 +50,10 @@ export const lastPayPeriod = () => {
         ed = goBackAYear(today,5);
     }
 
+    ed.setHours(23);
+    ed.setMinutes(59);
+    ed.setSeconds(59);
+
     const payPeriod = Object.create({});
     payPeriod.startDate = sd;
     payPeriod.endDate = ed;
@@ -107,6 +111,11 @@ export const currentPayPeriod = () => {
         sd = goForwardAYear(today,(-3));
         ed = goForwardAYear(today,3);
     }
+
+
+    ed.setHours(23);
+    ed.setMinutes(59);
+    ed.setSeconds(59);
 
     const payPeriod = Object.create({});
     payPeriod.startDate = sd;

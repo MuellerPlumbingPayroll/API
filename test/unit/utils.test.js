@@ -97,3 +97,103 @@ lab.experiment('When calculating pay periods', () => {
         Code.expect(res.endDate.getDay()).to.equal(tuesday);
     });
 });
+
+lab.experiment('When using utils in api/submit', () => {
+
+    lab.test('should submit a timecard sucessfully if no errors occur', async () => {
+
+
+        const testPP = UtilsPP.currentPayPeriod();
+        const fakeUserId = 'oijhg485irtergj';
+        const submission = { injured: false };
+        submission.userId = fakeUserId;
+        submission.starDate = testPP.starDate;
+        submission.endDate = testPP.endDate;
+
+        const addTimecardStub = Sinon.stub(Server.db, 'collection').withArgs('timecards').callsFake(() => {
+
+            return {
+                add: Sinon.stub().returns(Promise.resolve(submission))
+            };
+        });
+
+        const res = await UtilsDB.submitTimecard(fakeUserId, testPP, submission);
+
+        addTimecardStub.parent.restore();
+        Code.expect(res).to.equal(submission);
+    });
+
+    lab.test('should return entries for a pay period if no erros occur.', async () => {
+
+        const entriesSnapshotStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        collection() {
+
+                            return {
+                                where() {
+
+                                    return {
+                                        where() {
+
+                                            return {
+                                                get: Sinon.stub().returns(Promise.resolve({ })) // No entries
+                                            };
+                                        }
+                                    };
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+
+        const testPP = UtilsPP.currentPayPeriod();
+        const fakeUserId = 'oijhg485irtergj';
+        const res = await UtilsDB.getEntriesForPayPeriod(fakeUserId, testPP);
+
+        entriesSnapshotStub.parent.restore();
+
+        Code.expect(res).to.equal({ });
+
+    });
+
+    lab.test('should successfully return if a timecard for a given pay period has been submitted', async () => {
+
+        const timecardSnapshotStub = Sinon.stub(Server.db, 'collection').withArgs('timecards').callsFake(() => {
+
+            return {
+
+                where() {
+
+                    return {
+                        where() {
+
+                            return {
+                                where() {
+
+                                    return {
+                                        get: Sinon.stub().returns({ empty: true }) // No entries
+                                    };
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+        const testPP = UtilsPP.currentPayPeriod();
+        const fakeUserId = 'oijhg485irtergj';
+        const res = await UtilsDB.payPeriodSubmitted(fakeUserId, testPP);
+
+        timecardSnapshotStub.parent.restore();
+
+        Code.expect(res).to.equal(false);
+    });
+});
