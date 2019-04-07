@@ -60,20 +60,23 @@ const server = new Hapi.Server({
                     'in': 'header'
                 }
             },
-            security: [{ 'Bearer': [] }]
+            security: [{ 'simple': [] }]
 
         }
     };
     await server.register(AuthBearer);
 
-    server.auth.strategy('bearer', 'bearer-access-token', {
-        allowQueryToken: true,              // optional, false by default
+    server.auth.strategy('simple', 'bearer-access-token', {
         validate: async (request, token, h) => {
 
+            console.log('Test');
             let isValid = false;
             let credentials = {};
             try {
+
+                console.log('Yes');
                 const profile = await auth.verifyIdToken(token);
+                console.log('No');
                 const emailToAuthenticate = profile.email;
 
                 const userRefs = await server.db.collection('users').get();
@@ -100,16 +103,17 @@ const server = new Hapi.Server({
                 credentials = profile;
             }
             catch (e){
+                console.error(e);
                 isValid = false;
             }
 
             // here is where you validate your token
             // comparing with token from your database for example
 
-            return h.authenticated({ isValid, credentials });
+            return { isValid, credentials };
         }
     });
-    server.auth.default('bearer');
+    server.auth.default('simple');
     /* register plugins */
     await server.register([
         Inert,
