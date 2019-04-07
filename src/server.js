@@ -55,7 +55,7 @@ const server = new Hapi.Server({
             documentationPath: '/',
             securityDefinitions: {
                 'Bearer': {
-                    'type': 'apiKey',
+                    'type': 'Bearer',
                     'name': 'Authorization',
                     'in': 'header'
                 }
@@ -74,12 +74,12 @@ const server = new Hapi.Server({
             let credentials = {};
             try {
 
-                console.log('Yes');
-                const profile = await auth.verifyIdToken(token);
+
+                const profile = await module.exports.auth.verifyIdToken(token);
                 console.log('No');
                 const emailToAuthenticate = profile.email;
 
-                const userRefs = await server.db.collection('users').get();
+                const userRefs = await module.exports.db.collection('users').get();
 
                 // Keep id and user data
                 const users = userRefs.docs.map((user) => Object.assign({ id: user.id }, user.data()));
@@ -132,5 +132,6 @@ const server = new Hapi.Server({
 
 module.exports = {
     server,
-    db
+    db,
+    auth
 };

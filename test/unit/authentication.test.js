@@ -7,6 +7,7 @@ const lab = exports.lab = Lab.script();
 
 lab.experiment('When authenticating email', () => {
 
+
     lab.test('should successfully return userId if email is authenticated', async () => {
 
 
@@ -56,6 +57,7 @@ lab.experiment('When authenticating email', () => {
 
         const emailToAuthenticate = 'fake11@gmail.com';
 
+        Sinon.stub;
         const userRefsStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
 
             return {

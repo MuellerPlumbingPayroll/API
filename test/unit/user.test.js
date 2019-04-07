@@ -9,6 +9,7 @@ lab.experiment('When requesting users', () => {
 
     lab.test('should successfully retrieve users from firebase', async () => {
 
+
         const expected =
             [
                 {
@@ -47,7 +48,11 @@ lab.experiment('When requesting users', () => {
             };
         });
 
-        const res = await Server.server.inject('/users');
+        const injectOptions = {
+            url: '/users',
+            credentials :'test'
+        };
+        const res = await Server.server.inject(injectOptions);
 
         snapshotStub.restore();
 
@@ -64,8 +69,12 @@ lab.experiment('When requesting users', () => {
                 get: Sinon.stub().returns(Promise.reject())
             };
         });
+        const injectOptions = {
+            url: '/users',
+            credentials :'test'
+        };
 
-        const res = await Server.server.inject('/cost-code');
+        const res = await Server.server.inject(injectOptions);
         snapshotStub.restore();
 
         Code.expect(res.statusCode).to.equal(500);
@@ -81,7 +90,8 @@ lab.experiment('When adding a user', () => {
         const injectOptions = {
             method: 'POST',
             url: '/users',
-            payload: missingAttrs
+            payload: missingAttrs,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -105,7 +115,8 @@ lab.experiment('When adding a user', () => {
         const injectOptions = {
             method: 'POST',
             url: '/users',
-            payload: fakeNewUser
+            payload: fakeNewUser,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -137,7 +148,8 @@ lab.experiment('When adding a user', () => {
         const injectOptions = {
             method: 'POST',
             url: `/users/${fakeUserId}`,
-            payload: fakeExistingUser
+            payload: fakeExistingUser,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -200,7 +212,8 @@ lab.experiment('when deleting a user', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: '/users/fakeUserId'
+            url: '/users/fakeUserId',
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
