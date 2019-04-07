@@ -1,4 +1,7 @@
 import Boomify from 'boom';
+import Boom from 'boom';
+import { currentPayPeriod } from '../utils/payperiod';
+import { userExists } from '../utils/database';
 
 const functions = Object.create({});
 
@@ -13,6 +16,11 @@ functions.addEntry = async (request, h) => {
     const server = require('../server.js');
 
     try {
+
+        if (!(await userExists(userId))) {
+            return Boom.notFound('User does not exist.');
+        }
+
         // Add new entry
         if (entryId === undefined) {
 
@@ -45,14 +53,21 @@ functions.getUserEntries = async (request, h) => {
     const server = require('../server.js');
 
     const userId = request.params.userId;
+    const currPayPeriod = await currentPayPeriod();
 
     try {
-        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').get();
+
+        if (!(await userExists(userId))) {
+            return Boom.notFound('User does not exist.');
+        }
+
+        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').where('timeCreated', '>=', currPayPeriod.startDate).get();
         if (entryRefs.empty) {
             return [];
         }
 
-        return entryRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
+        const currentPPEntries = entryRefs.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
+        return h.response(currentPPEntries).code(200);
     }
     catch (error) {
         return new Boomify(error);
@@ -68,6 +83,11 @@ functions.removeEntry = async (request, h) => {
     const userId = request.params.userId;
 
     try {
+
+        if (!(await userExists(userId))) {
+            return Boom.notFound('User does not exist.');
+        }
+
         await server.db.collection('users').doc(userId).collection('entries').doc(entryId).delete();
 
         return h.response(); // Will return OK
