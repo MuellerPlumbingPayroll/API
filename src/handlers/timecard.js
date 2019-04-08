@@ -68,11 +68,9 @@ functions.getTimecards = async (request, h) => {
     };
 
     try {
-        console.log('aqui');
         const timecards = [];
 
         for (let i = 0; i < userIds.length; ++i) {
-            console.log('ok');
             const id = userIds[i];
             const user = await getUser(id);
 
@@ -145,7 +143,6 @@ functions.getTimecards = async (request, h) => {
         return h.response(timecards);
     }
     catch (error) {
-        console.log(error);
         return new Boomify(error);
     }
 };
