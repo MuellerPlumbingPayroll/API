@@ -115,9 +115,9 @@ export const getSubmission = async (userId, payPeriod) => {
             return null;
         }
 
-        const submission = submissionSnapshot.docs.map((doc) => Object.assign(doc.data()));
+        const submission = submissionSnapshot.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
 
-        return submission[0].injured;
+        return submission[0];
     }
     catch (err) {
         throw err;

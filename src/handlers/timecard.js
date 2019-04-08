@@ -61,18 +61,18 @@ functions.submit = async (request, h) => {
 
 functions.getTimecards = async (request, h) => {
 
-    const userIds = request.params.userIds;
+    const userIds = request.payload.userIds;
     const period = {
         startDate: request.params.startDate,
         endDate: request.params.endDate
     };
 
     try {
-
+        console.log('aqui');
         const timecards = [];
 
         for (let i = 0; i < userIds.length; ++i) {
-
+            console.log('ok');
             const id = userIds[i];
             const user = await getUser(id);
 
@@ -131,7 +131,13 @@ functions.getTimecards = async (request, h) => {
                 }
 
                 const injuredSub = await getSubmission(id, period);
-                timecard.injured = injuredSub;
+                if (injuredSub === null) {
+                    timecard.injured = null;
+                }
+                else {
+                    timecard.injured = injuredSub.injured;
+                }
+
                 timecards.push(timecard);
             }
         }
@@ -139,6 +145,7 @@ functions.getTimecards = async (request, h) => {
         return h.response(timecards);
     }
     catch (error) {
+        console.log(error);
         return new Boomify(error);
     }
 };
