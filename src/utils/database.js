@@ -28,10 +28,12 @@ export const submitTimecard = async (userId, payPeriod, submission) => {
 
     try {
         await server.db.collection('timecards').add(submission);
-        return Promise.resolve(submission);
+        // return Promise.resolve(submission);
+        return submission;
     }
-    catch (error) {
-        return Promise.reject(error);
+    catch (err) {
+        // return Promise.reject(error);
+        throw err;
     }
 };
 
@@ -47,10 +49,12 @@ export const getEntriesForPayPeriod = async (userId, payPeriod) => {
 
         const entriesSnapshot = query.get();
 
-        return Promise.resolve(entriesSnapshot);
+        // return Promise.resolve(entriesSnapshot);
+        return entriesSnapshot;
     }
     catch (err) {
-        return Promise.reject(err);
+        // return Promise.reject(err);
+        throw err;
     }
 };
 
@@ -68,13 +72,15 @@ export const payPeriodSubmitted = async (userId, payPeriod) => {
 
         const timecardSnapshot = await query.get();
         if (!timecardSnapshot.empty) {
-            return Promise.resolve(true);
+            // return Promise.resolve(true);
+            return true;
         }
 
-        return Promise.resolve(false);
+        // return Promise.resolve(false);
+        return false;
     }
     catch (err) {
-        return Promise.reject(err);
+        throw err;
     }
 };
 

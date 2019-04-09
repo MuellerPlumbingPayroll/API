@@ -4,7 +4,6 @@ const Lab = require('lab');
 const Server = require('../../src/server');
 const Sinon = require('sinon');
 const UtilsDB = require('../../src/utils/database');
-const UtilsPP = require('../../src/utils/payperiod');
 
 const lab = exports.lab = Lab.script();
 
@@ -54,21 +53,91 @@ lab.experiment('When submitting a timecard', () => {
         Code.expect(res.statusCode).to.equal(500);
     });
 
-    lab.test('should ignore request if user has submitted current pay period and does not have time entries for previous pay period.', async () => {
+    lab.test('should update submission for current pay period if user does not have time entries for previous pay period', async () => {
 
         const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
 
-            return Promise.resolve(true);
+            return true;
         });
 
         const entriesSnapshotStub = Sinon.stub(UtilsDB, 'getEntriesForPayPeriod').callsFake(() => {
 
-            return Promise.resolve({ empty: true });
+            return { empty: true };
+        });
+
+        const getSubmissionStub = Sinon.stub(UtilsDB, 'getSubmission').callsFake(() => {
+
+            return {};
+        });
+
+        const updateStub =  Sinon.stub(Server.db, 'collection').withArgs('timecards').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        update: Sinon.stub().resolves
+                    };
+                }
+            };
+        });
+
+        const fakeUserId = '3behrfuvikmnfbh3j';
+        const timecard = {
+            injured: false
+        };
+
+        const injectOptions = {
+            method: 'POST',
+            url: `/submit/${fakeUserId}`,
+            payload: timecard
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        userExistsStub.restore();
+        entriesSnapshotStub.restore();
+        updateStub.parent.restore();
+        getSubmissionStub.restore();
+
+        Sinon.assert.calledOnce(userExistsStub);
+        Sinon.assert.calledOnce(entriesSnapshotStub);
+        Sinon.assert.calledOnce(getSubmissionStub);
+        Code.expect(res.statusCode).to.equal(200);
+    });
+
+    lab.test('should update submission for current pay period if user has time entries for previous pay period', async () => {
+
+        const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
+
+            return true;
+        });
+
+        const entriesSnapshotStub = Sinon.stub(UtilsDB, 'getEntriesForPayPeriod').callsFake(() => {
+
+            return { empty: false };
+        });
+
+        const getSubmissionStub = Sinon.stub(UtilsDB, 'getSubmission').callsFake(() => {
+
+            return {};
         });
 
         const currentPPSubmittedStub = Sinon.stub(UtilsDB, 'payPeriodSubmitted').callsFake(() => {
 
-            return Promise.resolve(true);
+            return true;
+        });
+
+        const updateStub =  Sinon.stub(Server.db, 'collection').withArgs('timecards').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        update: Sinon.stub().resolves
+                    };
+                }
+            };
         });
 
         const fakeUserId = '3behrfuvikmnfbh3j';
@@ -87,35 +156,31 @@ lab.experiment('When submitting a timecard', () => {
         userExistsStub.restore();
         entriesSnapshotStub.restore();
         currentPPSubmittedStub.restore();
+        updateStub.parent.restore();
+        getSubmissionStub.restore();
 
         Sinon.assert.calledOnce(userExistsStub);
         Sinon.assert.calledOnce(entriesSnapshotStub);
+        Sinon.assert.calledOnce(getSubmissionStub);
         Sinon.assert.calledOnce(currentPPSubmittedStub);
         Code.expect(res.statusCode).to.equal(200);
     });
 
-    lab.test('should ignore submit if previous and current pay period submitted otherwise.', async () => {
+    lab.test('should add a new submission for current pay period if user does not have time entries for previous pay period', async () => {
 
         const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
 
-            return Promise.resolve(true);
+            return true;
         });
 
         const entriesSnapshotStub = Sinon.stub(UtilsDB, 'getEntriesForPayPeriod').callsFake(() => {
 
-            return Promise.resolve({ empty: false });
+            return { empty: true };
         });
 
-        let PPSubmittedStub = Sinon.stub(UtilsDB, 'payPeriodSubmitted').callsFake(() => {
+        const getSubmissionStub = Sinon.stub(UtilsDB, 'getSubmission').callsFake(() => {
 
-            return Promise.resolve(true);
-        });
-
-        const prevPP = await UtilsPP.lastPayPeriod();
-
-        const lastPayPeriodStub = Sinon.stub(UtilsPP, 'lastPayPeriod').callsFake(() => {
-
-            return prevPP;
+            return null;
         });
 
         const fakeUserId = '3behrfuvikmnfbh3j';
@@ -125,7 +190,7 @@ lab.experiment('When submitting a timecard', () => {
 
         const submitTimecardStub = Sinon.stub(UtilsDB, 'submitTimecard').callsFake(() => {
 
-            return Promise.resolve(timecard);
+            return timecard;
         });
 
         const injectOptions = {
@@ -136,28 +201,115 @@ lab.experiment('When submitting a timecard', () => {
 
         const res = await Server.server.inject(injectOptions);
 
-        PPSubmittedStub.restore();
+        userExistsStub.restore();
+        entriesSnapshotStub.restore();
+        submitTimecardStub.restore();
+        getSubmissionStub.restore();
 
         Sinon.assert.calledOnce(userExistsStub);
         Sinon.assert.calledOnce(entriesSnapshotStub);
-        Sinon.assert.calledTwice(PPSubmittedStub);
-        Code.expect(res.statusCode).to.equal(200);
+        Sinon.assert.calledOnce(getSubmissionStub);
+        Code.expect(res.statusCode).to.equal(201);
+    });
 
-        PPSubmittedStub = Sinon.stub(UtilsDB, 'payPeriodSubmitted').callsFake(() => {
+    lab.test('should add a new submission for current pay period if user does not have time entries for previous pay period', async () => {
 
-            return Promise.resolve(false);
+        const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
+
+            return true;
         });
 
-        // Submit for previous pay period
-        const res2 = await Server.server.inject(injectOptions);
+        const entriesSnapshotStub = Sinon.stub(UtilsDB, 'getEntriesForPayPeriod').callsFake(() => {
 
-        Code.expect(res2.statusCode).to.equal(201);
+            return { empty: false };
+        });
+
+        const getSubmissionStub = Sinon.stub(UtilsDB, 'getSubmission').callsFake(() => {
+
+            return null;
+        });
+
+        const prevPPSubmittedStub = Sinon.stub(UtilsDB, 'payPeriodSubmitted').callsFake(() => {
+
+            return true;
+        });
+
+        const fakeUserId = '3behrfuvikmnfbh3j';
+        const timecard = {
+            injured: false
+        };
+
+        const submitTimecardStub = Sinon.stub(UtilsDB, 'submitTimecard').callsFake(() => {
+
+            return timecard;
+        });
+
+        const injectOptions = {
+            method: 'POST',
+            url: `/submit/${fakeUserId}`,
+            payload: timecard
+        };
+
+        const res = await Server.server.inject(injectOptions);
 
         userExistsStub.restore();
         entriesSnapshotStub.restore();
-        PPSubmittedStub.restore();
-        lastPayPeriodStub.restore();
+        prevPPSubmittedStub.restore();
         submitTimecardStub.restore();
+        getSubmissionStub.restore();
+
+        Sinon.assert.calledOnce(userExistsStub);
+        Sinon.assert.calledOnce(entriesSnapshotStub);
+        Sinon.assert.calledOnce(getSubmissionStub);
+        Sinon.assert.calledOnce(prevPPSubmittedStub);
+        Code.expect(res.statusCode).to.equal(201);
+    });
+
+
+    lab.test('should submit for the previous pay period.', async () => {
+
+        const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
+
+            return true;
+        });
+
+        const entriesSnapshotStub = Sinon.stub(UtilsDB, 'getEntriesForPayPeriod').callsFake(() => {
+
+            return { empty: false };
+        });
+
+        const prevPPSubmittedStub = Sinon.stub(UtilsDB, 'payPeriodSubmitted').callsFake(() => {
+
+            return false;
+        });
+
+        const fakeUserId = '3behrfuvikmnfbh3j';
+        const timecard = {
+            injured: false
+        };
+
+        const submitTimecardStub = Sinon.stub(UtilsDB, 'submitTimecard').callsFake(() => {
+
+            return timecard;
+        });
+
+        const injectOptions = {
+            method: 'POST',
+            url: `/submit/${fakeUserId}`,
+            payload: timecard
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        userExistsStub.restore();
+        entriesSnapshotStub.restore();
+        prevPPSubmittedStub.restore();
+        submitTimecardStub.restore();
+
+        Sinon.assert.calledOnce(userExistsStub);
+        Sinon.assert.calledOnce(entriesSnapshotStub);
+        Sinon.assert.calledOnce(prevPPSubmittedStub);
+        Code.expect(res.statusCode).to.equal(201);
     });
 });
 
