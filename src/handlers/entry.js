@@ -61,7 +61,7 @@ functions.getUserEntries = async (request, h) => {
             return Boom.notFound('User does not exist.');
         }
 
-        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').where('timeCreated', '>=', currPayPeriod.startDate).get();
+        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').where('jobDate', '>=', currPayPeriod.startDate).get();
         if (entryRefs.empty) {
             return [];
         }
