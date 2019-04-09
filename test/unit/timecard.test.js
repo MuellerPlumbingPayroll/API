@@ -50,6 +50,7 @@ lab.experiment('When submitting a timecard', () => {
 
         userExistsStub.restore();
 
+        Sinon.assert.calledOnce(userExistsStub);
         Code.expect(res.statusCode).to.equal(500);
     });
 
@@ -158,6 +159,103 @@ lab.experiment('When submitting a timecard', () => {
         lastPayPeriodStub.restore();
         submitTimecardStub.restore();
     });
+});
+
+lab.experiment('When requesting timecards for a pay period', () => {
+
+    lab.test('should return 500 if an error occurs while get a users info', async () => {
+
+        const getUserStub = Sinon.stub(UtilsDB, 'getUser').callsFake(() => {
+
+            return Promise.reject();
+        });
+
+        const userIds = ['ijhbhjikmnhjk34rt'];
+        const startDate = new Date();
+        const endDate = new Date();
+
+        const injectOptions = {
+            method: 'GET',
+            url: `/timecards/${userIds}/${startDate}/${endDate}`
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        getUserStub.restore();
+        Sinon.assert.calledOnce(getUserStub);
+        Code.expect(res.statusCode).to.equal(500);
+    });
+
+    // lab.test('should return a timecard for a single users', async () => {
+
+    //     const getUserStub = Sinon.stub(UtilsDB, 'getUser').callsFake(() => {
+
+    //         return { firstName: 'Jon', lastName: 'Snow' };
+    //     });
+
+    //     const now = new Date();
+
+    //     const timeEntryInfo = {
+    //         jobType: 'Other',
+    //         job: 'Vacation',
+    //         timeWorked: 3,
+    //         jobDate: now,
+    //         latitude: null,
+    //         longitude: null
+    //     };
+
+    //     const entriesSnapshotStub = Sinon.stub(UtilsDB, 'getEntriesForPayPeriod').callsFake(() => {
+
+    //         return Promise.resolve({
+    //             empty: false,
+    //             docs: [
+    //                 {
+    //                     id: '38edufjhryu',
+    //                     data: () => {
+
+    //                         return {
+    //                             jobType: 'Other',
+    //                             job: 'Vacation',
+    //                             timeWorked: 3,
+    //                             jobDate: now,
+    //                             costCode: null,
+    //                             latitude: null,
+    //                             longitude: null
+    //                         };
+    //                     }
+    //                 }
+    //             ]
+    //         });
+    //     });
+
+    //     const getSubmissionStub = Sinon.stub(UtilsDB, 'getSubmission').callsFake(() => {
+
+    //         return Promise.resolve({ injured: false });
+    //     });
+
+    //     const userIds = ['lknhjknjklkmnjsdf24'];
+    //     const startDate = new Date();
+    //     const endDate = new Date();
+
+    //     const injectOptions = {
+    //         method: 'GET',
+    //         url: `/timecards/${userIds}/${startDate}/${endDate}`
+    //     };
+
+    //     const res = await Server.server.inject(injectOptions);
+
+    //     getUserStub.restore();
+    //     entriesSnapshotStub.restore();
+    //     getSubmissionStub.restore();
+
+    //     Sinon.assert.calledOnce(getUserStub);
+    //     Sinon.assert.calledOnce(entriesSnapshotStub);
+    //     Sinon.assert.calledOnce(getSubmissionStub);
+
+    //     Code.expect(res.statusCode).to.equal(200);
+
+    //     // TypeError: entry.jobDate.toDate is not a function... probably because jobDate is a Timestamp.
+    // });
 });
 
 

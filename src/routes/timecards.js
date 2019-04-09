@@ -13,6 +13,16 @@ const timecards = [{
             payload: timecardSchema
         }
     }
+},
+{
+    method: 'GET',
+    path: '/timecards/{userIds}/{startDate}/{endDate}',
+    handler: functions.getTimecards,
+    options: {
+        tags: [
+            'api'
+        ]
+    }
 }
 ];
 
