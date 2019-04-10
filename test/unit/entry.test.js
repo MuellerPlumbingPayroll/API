@@ -172,7 +172,17 @@ lab.experiment('when retrieving entries', () => {
         Code.expect(res.statusCode).to.equal(404);
     });
 
-    lab.test('should return 500 status code if error occurs', async () => {
+    lab.test('should return current pay period entries if user has submitted previous pay period', async () => {
+
+        const prevPPSubmittedStub = Sinon.stub(UtilsDB, 'payPeriodSubmitted').callsFake(() => {
+
+            return true;
+        });
+
+        const entriesSnapshot = { empty: false, docs: [{ id: '398eurfhj', data: () => {
+
+            return { docData: 'test' };
+        } }] };
 
         const getEntriesStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
 
@@ -186,7 +196,7 @@ lab.experiment('when retrieving entries', () => {
                                 where() {
 
                                     return {
-                                        get: Sinon.stub().returns(Promise.reject())
+                                        get: Sinon.stub().returns(Promise.resolve(entriesSnapshot))
                                     };
                                 }
 
@@ -213,13 +223,67 @@ lab.experiment('when retrieving entries', () => {
 
         getEntriesStub.parent.restore();
         userExistsStub.restore();
+        prevPPSubmittedStub.restore();
 
+        Sinon.assert.calledOnce(prevPPSubmittedStub);
         Sinon.assert.calledOnce(userExistsStub);
         Sinon.assert.calledOnce(getEntriesStub);
-        Code.expect(res.statusCode).to.equal(500);
+        Code.expect(res.statusCode).to.equal(200);
     });
 
-    lab.test('should successfully return current pay period entries for a user', async () => {
+    lab.test('should return previous pay period entries if user has not submitted previous pay period and has entries to submit', async () => {
+
+        const prevPPSubmittedStub = Sinon.stub(UtilsDB, 'payPeriodSubmitted').callsFake(() => {
+
+            return false;
+        });
+
+        const entriesSnapshot = { empty: false, docs: [{ id: '398eurfhj', data: () => {
+
+            return { docData: 'test' };
+        } }] };
+
+        const getPrevPPEntriesStub = Sinon.stub(UtilsDB, 'getEntriesForPayPeriod').callsFake(() => {
+
+            return entriesSnapshot;
+        });
+
+        const userExistsStub = Sinon.stub(UtilsDB, 'userExists').callsFake(() => {
+
+            return true;
+        });
+
+        const fakeUserId = '93nmflkajsdf';
+
+        const injectOptions = {
+            method: 'GET',
+            url: `/entries/${fakeUserId}`
+        };
+
+        const res = await Server.server.inject(injectOptions);
+
+        userExistsStub.restore();
+        prevPPSubmittedStub.restore();
+        getPrevPPEntriesStub.restore();
+
+        Sinon.assert.calledOnce(prevPPSubmittedStub);
+        Sinon.assert.calledOnce(userExistsStub);
+        Code.expect(res.statusCode).to.equal(200);
+    });
+
+    lab.test('should return current pay period entries if user has not submitted previous pay period and does not have entries to submit', async () => {
+
+        const prevPPSubmittedStub = Sinon.stub(UtilsDB, 'payPeriodSubmitted').callsFake(() => {
+
+            return false;
+        });
+
+        const entriesSnapshot = { empty: true, docs: [] };
+
+        const getPrevPPEntriesStub = Sinon.stub(UtilsDB, 'getEntriesForPayPeriod').callsFake(() => {
+
+            return entriesSnapshot;
+        });
 
         const getEntriesStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
 
@@ -230,23 +294,13 @@ lab.experiment('when retrieving entries', () => {
                         collection() {
 
                             return {
-
                                 where() {
 
                                     return {
-                                        get: Sinon.stub().returns({
-                                            docs: [
-                                                {
-                                                    id: '38edufjhryu',
-                                                    data: () => {
-
-                                                        return { docData: 'fake entry Data' };
-                                                    }
-                                                }
-                                            ]
-                                        })
+                                        get: Sinon.stub().returns(Promise.resolve(entriesSnapshot))
                                     };
                                 }
+
                             };
                         }
                     };
@@ -270,7 +324,11 @@ lab.experiment('when retrieving entries', () => {
 
         getEntriesStub.parent.restore();
         userExistsStub.restore();
+        prevPPSubmittedStub.restore();
+        getPrevPPEntriesStub.restore();
 
+        Sinon.assert.calledOnce(prevPPSubmittedStub);
+        Sinon.assert.calledOnce(userExistsStub);
         Sinon.assert.calledOnce(getEntriesStub);
         Code.expect(res.statusCode).to.equal(200);
     });
