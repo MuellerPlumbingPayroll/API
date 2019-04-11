@@ -23,7 +23,8 @@ lab.experiment('When adding an entry', () => {
         const injectOptions = {
             method: 'POST',
             url: `/entry/${fakeUserId}`,
-            payload: invalidPayload
+            payload: invalidPayload,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -78,7 +79,8 @@ lab.experiment('When adding an entry', () => {
         const injectOptions = {
             method: 'POST',
             url: `/entry/${fakeUserId}`,
-            payload: timeEntryInfo
+            payload: timeEntryInfo,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -135,7 +137,8 @@ lab.experiment('When adding an entry', () => {
         const injectOptions = {
             method: 'POST',
             url: `/entry/${fakeUserId}/${fakeEntryId}`,
-            payload: timeEntryInfo
+            payload: timeEntryInfo,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -162,7 +165,8 @@ lab.experiment('when retrieving entries', () => {
 
         const injectOptions = {
             method: 'GET',
-            url: `/entries/${fakeUserId}`
+            url: `/entries/${fakeUserId}`,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -216,7 +220,8 @@ lab.experiment('when retrieving entries', () => {
 
         const injectOptions = {
             method: 'GET',
-            url: `/entries/${fakeUserId}`
+            url: `/entries/${fakeUserId}`,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -257,7 +262,8 @@ lab.experiment('when retrieving entries', () => {
 
         const injectOptions = {
             method: 'GET',
-            url: `/entries/${fakeUserId}`
+            url: `/entries/${fakeUserId}`,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -317,7 +323,8 @@ lab.experiment('when retrieving entries', () => {
 
         const injectOptions = {
             method: 'GET',
-            url: `/entries/${fakeUserId}`
+            url: `/entries/${fakeUserId}`,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -365,7 +372,8 @@ lab.experiment('when deleting an entry', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: `/entry/${fakeUserId}/${fakeEntryId}`
+            url: `/entry/${fakeUserId}/${fakeEntryId}`,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -410,7 +418,8 @@ lab.experiment('when deleting an entry', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: `/entry/${fakeUserId}/${fakeEntryId}`
+            url: `/entry/${fakeUserId}/${fakeEntryId}`,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);

@@ -42,7 +42,8 @@ lab.experiment('When submitting a timecard', () => {
         const injectOptions = {
             method: 'POST',
             url: `/submit/${fakeUserId}`,
-            payload: timecard
+            payload: timecard,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -90,7 +91,9 @@ lab.experiment('When submitting a timecard', () => {
         const injectOptions = {
             method: 'POST',
             url: `/submit/${fakeUserId}`,
-            payload: timecard
+            payload: timecard,
+            credentials :'test',
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -148,7 +151,8 @@ lab.experiment('When submitting a timecard', () => {
         const injectOptions = {
             method: 'POST',
             url: `/submit/${fakeUserId}`,
-            payload: timecard
+            payload: timecard,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -196,7 +200,8 @@ lab.experiment('When submitting a timecard', () => {
         const injectOptions = {
             method: 'POST',
             url: `/submit/${fakeUserId}`,
-            payload: timecard
+            payload: timecard,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -247,7 +252,8 @@ lab.experiment('When submitting a timecard', () => {
         const injectOptions = {
             method: 'POST',
             url: `/submit/${fakeUserId}`,
-            payload: timecard
+            payload: timecard,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -296,7 +302,8 @@ lab.experiment('When submitting a timecard', () => {
         const injectOptions = {
             method: 'POST',
             url: `/submit/${fakeUserId}`,
-            payload: timecard
+            payload: timecard,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -328,7 +335,8 @@ lab.experiment('When requesting timecards for a pay period', () => {
 
         const injectOptions = {
             method: 'GET',
-            url: `/timecards/${userIds}/${startDate}/${endDate}`
+            url: `/timecards/${userIds}/${startDate}/${endDate}`,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
