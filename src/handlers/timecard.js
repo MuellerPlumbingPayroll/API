@@ -10,7 +10,7 @@ functions.submit = async (request, h) => {
     let submission = request.payload;
     const userId = request.params.userId;
 
-    //const server = require('../server.js');
+    const server = require('../server.js');
 
     try {
 
@@ -26,28 +26,32 @@ functions.submit = async (request, h) => {
         // Handles new users, and users that have not submitted time entries for an entire pay period or longer
         if (entriesSnapshot.empty) {
 
-            const currentPPSubmitted = await payPeriodSubmitted(userId, currPayPeriod);
-            if (currentPPSubmitted) {
-                return h.response();
+            const currentPPSubmission = await getSubmission(userId, currPayPeriod);
+
+            if (currentPPSubmission === null) { // First submission for current pay period
+                submission = await submitTimecard(userId, (currPayPeriod), submission);
+                return h.response().code(201);
             }
 
-            submission = await submitTimecard(userId, (currPayPeriod), submission);
-            return h.response(submission).code(201);
+            const submissionId = currentPPSubmission.id;
+            await server.db.collection('timecards').doc(submissionId).update(submission);
+            return h.response().code(200);
         }
 
         // Check if user has already submitted timecard for previous pay period
         const prevPPSubmitted = await payPeriodSubmitted(userId, prevPayPeriod);
         if (prevPPSubmitted) {
 
-            // If current pay period is submitted ignore request
-            const currentPPSubmitted = await payPeriodSubmitted(userId, currPayPeriod);
-            if (currentPPSubmitted) {
-                return h.response();
+            const currentPPSubmission = await getSubmission(userId, currPayPeriod);
+
+            if (currentPPSubmission === null) { // First submission for current pay period
+                submission = await submitTimecard(userId, (currPayPeriod), submission);
+                return h.response().code(201);
             }
 
-            // Submitting timecard before end of pay period.
-            submission = await submitTimecard(userId, currPayPeriod, submission);
-            return h.response(submission).code(201);
+            const submissionId = currentPPSubmission.id;
+            await server.db.collection('timecards').doc(submissionId).update(submission);
+            return h.response().code(200);
         }
 
         // Submitting timecard for previous pay period
@@ -55,6 +59,7 @@ functions.submit = async (request, h) => {
         return h.response(submission).code(201);
     }
     catch (error) {
+        console.log(error);
         return new Boomify(error);
     }
 };
