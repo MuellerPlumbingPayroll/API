@@ -66,7 +66,8 @@ functions.submit = async (request, h) => {
 
 functions.getTimecards = async (request, h) => {
 
-    const userIds = request.params.userIds;
+    const userIds = JSON.parse(request.params.userIds);
+
     const period = {
         startDate: request.params.startDate,
         endDate: request.params.endDate
