@@ -329,7 +329,7 @@ lab.experiment('When requesting timecards for a pay period', () => {
             return Promise.reject();
         });
 
-        const userIds = ['ijhbhjikmnhjk34rt'];
+        const userIds = JSON.stringify(['ijhbhjikmnhjk34rt']);
         const startDate = new Date();
         const endDate = new Date();
 
