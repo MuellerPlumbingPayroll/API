@@ -23,6 +23,7 @@ const auth = [{
     path: '/authenticate/admin/{email}',
     handler: functions.authenticateAdminEmail,
     options: {
+        auth:false,
         tags: [
             'api'
         ],
