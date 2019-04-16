@@ -1,15 +1,28 @@
 {
+
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "chrome",
+            "type": "node",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:56935",
-            "webRoot": "${workspaceFolder}"
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/bin/babelify.js",
+            "args": [
+                "${workspaceFolder}/src/server.js",
+              ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch via NPM",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "node-start"
+            ]
         }
     ]
 }

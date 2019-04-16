@@ -46,8 +46,12 @@ lab.experiment('When requesting jobs', () => {
                 })
             };
         });
+        const injectOptions = {
+            url: '/jobs',
+            credentials :'test'
+        };
 
-        const res = await Server.server.inject('/jobs');
+        const res = await Server.server.inject(injectOptions);
 
         snapshotStub.restore();
 
@@ -64,8 +68,12 @@ lab.experiment('When requesting jobs', () => {
                 get: Sinon.stub().returns(Promise.reject())
             };
         });
+        const injectOptions = {
+            url: '/jobs',
+            credentials :'test'
+        };
 
-        const res = await Server.server.inject('/jobs');
+        const res = await Server.server.inject(injectOptions);
         snapshotStub.restore();
 
         Code.expect(res.statusCode).to.equal(500);
@@ -81,7 +89,8 @@ lab.experiment('When adding jobs', () => {
         const injectOptions = {
             method: 'POST',
             url: '/jobs',
-            payload: missingRequired
+            payload: missingRequired,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -106,7 +115,8 @@ lab.experiment('When adding jobs', () => {
         const injectOptions = {
             method: 'POST',
             url: '/jobs',
-            payload: fakeJobs
+            payload: fakeJobs,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -139,7 +149,8 @@ lab.experiment('When adding jobs', () => {
         const injectOptions = {
             method: 'POST',
             url: '/jobs',
-            payload: fakeJobs
+            payload: fakeJobs,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -169,7 +180,8 @@ lab.experiment('when deleting jobs', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: '/jobs/fakeId'
+            url: '/jobs/fakeId',
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -195,7 +207,8 @@ lab.experiment('when deleting jobs', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: '/jobs/fakeId'
+            url: '/jobs/fakeId',
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
