@@ -8,7 +8,7 @@
     "start": "node bin/babelify.js ./src/server.js",
     "debug": "nodemon --watch src bin/babelify.js ./src/server.js",
     "node-start": "nodemon --watch src bin/babelify.js ./src/server.js",
-    "test": "lab -T node_modules/lab-babel -v -l -c -L  -t 90",
+    "test": "lab -T node_modules/lab-babel -v -l -c -L  -t 85",
     "testloc": "node node_modules/lab/bin/lab -v -L -C -c -t 0",
     "test-cov-html": "lab -T node_modules/lab-babel -l -r html -o coverage.html"
   },

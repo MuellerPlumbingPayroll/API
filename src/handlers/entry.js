@@ -1,7 +1,7 @@
 import Boomify from 'boom';
 import Boom from 'boom';
-import { currentPayPeriod } from '../utils/payperiod';
-import { userExists } from '../utils/database';
+import { currentPayPeriod, lastPayPeriod } from '../utils/payperiod';
+import { userExists, payPeriodSubmitted, getEntriesForPayPeriod } from '../utils/database';
 
 const functions = Object.create({});
 
@@ -54,6 +54,7 @@ functions.getUserEntries = async (request, h) => {
 
     const userId = request.params.userId;
     const currPayPeriod = await currentPayPeriod();
+    const prevPayPeriod = await lastPayPeriod();
 
     try {
 
@@ -61,7 +62,17 @@ functions.getUserEntries = async (request, h) => {
             return Boom.notFound('User does not exist.');
         }
 
-        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').where('timeCreated', '>=', currPayPeriod.startDate).get();
+        const prevPayPeriodSubmitted = await payPeriodSubmitted(userId, prevPayPeriod);
+        if (!prevPayPeriodSubmitted) {
+
+            const prevPPEntriesRef = await getEntriesForPayPeriod(userId, prevPayPeriod);
+            if (!prevPPEntriesRef.empty) {
+                const prevPPEntries = prevPPEntriesRef.docs.map((doc) => Object.assign({ id: doc.id }, doc.data()));
+                return h.response(prevPPEntries).code(200);
+            }
+        }
+
+        const entryRefs = await server.db.collection('users').doc(userId).collection('entries').where('jobDate', '>=', currPayPeriod.startDate).get();
         if (entryRefs.empty) {
             return [];
         }

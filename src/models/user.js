@@ -7,6 +7,7 @@ const userSchema = Joi.object().keys({
     email: Joi.string().regex(/^[a-z0-9](\.?[a-z0-9]){5,}@gmail\.com$/i).required(),
     firstName: Joi.string().min(nameMinLength).max(nameMaxLength).required(),
     lastName: Joi.string().min(nameMinLength).max(nameMaxLength).required(),
+    isAdmin: Joi.boolean().required(),
     isActive: Joi.boolean().required(),
     dateToRemove: Joi.date().allow(null).default(null)
 });

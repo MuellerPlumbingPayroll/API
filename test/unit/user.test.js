@@ -101,7 +101,7 @@ lab.experiment('When adding a user', () => {
 
     lab.test('should successfully add a new user if payload is validated.', async () => {
 
-        const fakeNewUser = { email: 'fakeUser@gmail.com', firstName: 'Bob', lastName: 'Builder', isActive: true };
+        const fakeNewUser = { email: 'fakeUser@gmail.com', firstName: 'Bob', lastName: 'Builder', isAdmin: true, isActive: true };
 
         // Stub adding a user to firebase
         const firebaseStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
@@ -129,7 +129,7 @@ lab.experiment('When adding a user', () => {
 
     lab.test('should successfully updated an existing user if payload is validated', async () => {
 
-        const fakeExistingUser = { email: 'fakeUser@gmail.com', firstName: 'Bob', lastName: 'Builder', isActive: false };
+        const fakeExistingUser = { email: 'fakeUser@gmail.com', firstName: 'Bob', lastName: 'Builder', isAdmin: false, isActive: false };
         const fakeUserId = '7ujhgyujnbhdjsfg4wraf';
 
         // Stub adding a user to firebase

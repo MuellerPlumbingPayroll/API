@@ -197,3 +197,113 @@ lab.experiment('When using utils in api/submit', () => {
         Code.expect(res).to.equal(false);
     });
 });
+
+lab.experiment('When /timecards', () => {
+
+    lab.test('should return document for existing user', async () => {
+
+        const userSnapshotStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        get: Sinon.stub().returns({
+                            exists: true,
+                            data: () => {
+
+                                return { docData: 'oinjikjn' };
+                            }
+                        })
+                    };
+                }
+            };
+        });
+
+        const testId = 'lknbuik3n4jrkf';
+        const res = await UtilsDB.getUser(testId);
+
+        userSnapshotStub.parent.restore();
+
+        Sinon.assert.calledOnce(userSnapshotStub);
+        Code.expect(res.docData).to.equal('oinjikjn');
+    });
+
+    lab.test('should return a timecard submission', async () => {
+
+        const submissionSnapshotStub =  Sinon.stub(Server.db, 'collection').withArgs('timecards').callsFake(() => {
+
+            return {
+                where() {
+
+                    return {
+                        where() {
+
+                            return {
+                                where() {
+
+                                    return {
+                                        get: Sinon.stub().returns({
+                                            empty: false,
+                                            docs: [
+                                                {
+                                                    id: 'oiuyijnbrenijd',
+                                                    data: () => {
+
+                                                        return { docData: 'we908fudsinv' };
+                                                    }
+                                                }
+                                            ]
+                                        })
+                                    };
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+        const testId = 'lknbuik3n4jrkf';
+        const testPeriod =  { startDate: new Date(), endDate: new Date() };
+        const res = await UtilsDB.getSubmission(testId, testPeriod);
+
+        submissionSnapshotStub.parent.restore();
+        Code.expect(res.id).to.equal('oiuyijnbrenijd');
+    });
+
+    lab.test('should return null if timecard does not exist', async () => {
+
+        const submissionSnapshotStub =  Sinon.stub(Server.db, 'collection').withArgs('timecards').callsFake(() => {
+
+            return {
+                where() {
+
+                    return {
+                        where() {
+
+                            return {
+                                where() {
+
+                                    return {
+                                        get: Sinon.stub().returns({
+                                            empty: true
+                                        })
+                                    };
+                                }
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+        const testId = 'lknbuik3n4jrkf';
+        const testPeriod =  { startDate: new Date(), endDate: new Date() };
+        const res = await UtilsDB.getSubmission(testId, testPeriod);
+
+        submissionSnapshotStub.parent.restore();
+        Code.expect(res).to.equal(null);
+    });
+});
+
