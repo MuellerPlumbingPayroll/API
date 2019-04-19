@@ -50,13 +50,18 @@ export const lastPayPeriod = () => {
         ed = goBackAYear(today,5);
     }
 
+    //
+    sd.setHours(0);
+    sd.setMinutes(0);
+    sd.setSeconds(0);
+    // This needs to be 11:59:59 in central time not local
     ed.setHours(23);
     ed.setMinutes(59);
     ed.setSeconds(59);
 
     const payPeriod = Object.create({});
-    payPeriod.startDate = sd;
-    payPeriod.endDate = ed;
+    payPeriod.startDate = toLocalTime(sd);
+    payPeriod.endDate = toLocalTime(ed);
 
     return payPeriod;
 };
@@ -112,14 +117,28 @@ export const currentPayPeriod = () => {
         ed = goForwardAYear(today,3);
     }
 
-
+    //
+    sd.setHours(0);
+    sd.setMinutes(0);
+    sd.setSeconds(0);
+    // This needs to be 11:59:59 in central time not local
     ed.setHours(23);
     ed.setMinutes(59);
     ed.setSeconds(59);
 
     const payPeriod = Object.create({});
-    payPeriod.startDate = sd;
-    payPeriod.endDate = ed;
+    payPeriod.startDate = toLocalTime(sd);
+    payPeriod.endDate = toLocalTime(ed);
 
     return payPeriod;
+};
+
+//
+const toLocalTime = (time) => {
+
+    const millisecondsPerMinute = 60000;
+    const millisecondsPerHour = 3600000;
+    const offset = '-5';
+    const utc = time.getTime() + (time.getTimezoneOffset() * millisecondsPerMinute);
+    return new Date(utc + (millisecondsPerHour * offset));
 };
