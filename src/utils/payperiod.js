@@ -127,18 +127,13 @@ export const currentPayPeriod = () => {
     ed.setSeconds(59);
 
     const payPeriod = Object.create({});
-    console.log('before converting...');
-    console.log('timezone offeset', sd.getTimezoneOffset() / 60);
-    console.log('sd: ', sd.toLocaleString());
-    console.log('ed: ', ed.toLocaleString());
-    console.log('********************');
     payPeriod.startDate = toLocalTime(sd);
     payPeriod.endDate = toLocalTime(ed);
 
     return payPeriod;
 };
 
-//
+// Adds 5 hours to utc offset since IC is UTC-5 and servers are UTC-0
 const toLocalTime = (time) => {
 
     const millisecondsPerMinute = 60000;
