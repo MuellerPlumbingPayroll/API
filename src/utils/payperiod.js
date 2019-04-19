@@ -128,6 +128,7 @@ export const currentPayPeriod = () => {
 
     const payPeriod = Object.create({});
     console.log('before converting...');
+    console.log('timezone offeset', sd.getTimezoneOffset() / 60);
     console.log('sd: ', sd.toLocaleString());
     console.log('ed: ', ed.toLocaleString());
     console.log('********************');
