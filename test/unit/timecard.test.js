@@ -19,7 +19,8 @@ lab.experiment('When submitting a timecard', () => {
         const injectOptions = {
             method: 'POST',
             url: `/submit/${fakeUserId}`,
-            payload: invalidPayload
+            payload: invalidPayload,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);

@@ -7,6 +7,7 @@ const auth = [{
     path: '/authenticate/{email}',
     handler: functions.authenticateEmail,
     options: {
+        auth:false,
         tags: [
             'api'
         ],
@@ -22,6 +23,7 @@ const auth = [{
     path: '/authenticate/admin/{email}',
     handler: functions.authenticateAdminEmail,
     options: {
+        auth:false,
         tags: [
             'api'
         ],

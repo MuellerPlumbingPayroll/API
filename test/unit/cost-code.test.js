@@ -5,9 +5,59 @@ const Sinon = require('sinon');
 
 const lab = exports.lab = Lab.script();
 
+const mockId = () => {
+
+    const authenticatedUserId = 'fakeUserId1';
+    const emailToAuthenticate = 'fake11@gmail.com';
+
+    Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+        return {
+            get: Sinon.stub().returns({
+                docs: [
+                    {
+                        id: authenticatedUserId,
+                        data: () => {
+
+                            return {
+                                email: emailToAuthenticate,
+                                isActive: true
+                            };
+                        }
+                    },
+                    {
+                        id: 'fakeUserId2',
+                        data: () => {
+
+                            return {
+                                email: 'fake12@gmail.com',
+                                isActive: false
+                            };
+                        }
+                    }
+                ]
+            })
+        };
+    });
+    Sinon.stub(Server.auth, 'verifyIdToken').withArgs('testkey').callsFake(() => {
+
+        return {
+            email: emailToAuthenticate
+        };
+    });
+
+};
+
+const restoreId = () => {
+
+    Sinon.restore();
+};
+
+
 lab.experiment('When requesting cost-codes', () => {
 
     lab.test('should successfully retrieve cost-codes from firebase', async () => {
+
 
         const expected =
             [
@@ -46,8 +96,13 @@ lab.experiment('When requesting cost-codes', () => {
                 })
             };
         });
+        const injectOptions = {
+            method: 'GET',
+            url: '/cost-code',
+            credentials :'test'
+        };
 
-        const res = await Server.server.inject('/cost-code');
+        const res = await Server.server.inject(injectOptions);
 
         snapshotStub.restore();
 
@@ -64,8 +119,12 @@ lab.experiment('When requesting cost-codes', () => {
                 get: Sinon.stub().returns(Promise.reject())
             };
         });
+        const injectOptions = {
+            url: '/cost-code',
+            credentials :'test'
+        };
 
-        const res = await Server.server.inject('/cost-code');
+        const res = await Server.server.inject(injectOptions);
         snapshotStub.restore();
 
         Code.expect(res.statusCode).to.equal(500);
@@ -76,17 +135,20 @@ lab.experiment('When adding cost-codes', () => {
 
     lab.test('should return 400 status code if payload is missing code attribute.', async () => {
 
+        mockId();
         const missingCodePayLoad = { description: 'fake description.' };
 
         const injectOptions = {
             method: 'POST',
             url: '/cost-code',
-            payload: missingCodePayLoad
+            payload: missingCodePayLoad,
+            headers: { authorization:'Bearer testkey' } //Do Not change Testing Auth
+
         };
 
         const res = await Server.server.inject(injectOptions);
-
         Code.expect(res.statusCode).to.equal(400); // Expect Bad Request HTTP response
+        restoreId();
     });
 
     lab.test('should successfully add cost-code if payload is valid.', async () => {
@@ -111,7 +173,8 @@ lab.experiment('When adding cost-codes', () => {
         const injectOptions = {
             method: 'POST',
             url: '/cost-code',
-            payload: fakeCostCode
+            payload: fakeCostCode,
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -141,7 +204,8 @@ lab.experiment('when deleting a cost-code', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: '/cost-code/fakeCodeId'
+            url: '/cost-code/fakeCodeId',
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
@@ -168,7 +232,8 @@ lab.experiment('when deleting a cost-code', () => {
 
         const injectOptions = {
             method: 'DELETE',
-            url: '/cost-code/fakeCodeId'
+            url: '/cost-code/fakeCodeId',
+            credentials :'test'
         };
 
         const res = await Server.server.inject(injectOptions);
