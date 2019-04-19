@@ -143,7 +143,7 @@ const toLocalTime = (time) => {
 
     const millisecondsPerMinute = 60000;
     const millisecondsPerHour = 3600000;
-    const offset = '-5';
+    const offset = '+5';
     const utc = time.getTime() + (time.getTimezoneOffset() * millisecondsPerMinute);
     return new Date(utc + (millisecondsPerHour * offset));
 };
