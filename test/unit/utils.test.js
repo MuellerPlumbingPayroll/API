@@ -92,6 +92,8 @@ lab.experiment('When calculating pay periods', () => {
         const wednesday = 3;
         const tuesday = 2;
         const res = await UtilsPP.currentPayPeriod();
+        console.log('sd: ', res.startDate.toLocaleString());
+        console.log('ed: ', res.endDate.toLocaleString());
 
         Code.expect(res.startDate.getDay()).to.equal(wednesday);
         Code.expect(res.endDate.getDay()).to.equal(tuesday);

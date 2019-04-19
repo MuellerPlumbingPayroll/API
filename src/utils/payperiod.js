@@ -127,6 +127,10 @@ export const currentPayPeriod = () => {
     ed.setSeconds(59);
 
     const payPeriod = Object.create({});
+    console.log('before converting...');
+    console.log('sd: ', sd.toLocaleString());
+    console.log('ed: ', ed.toLocaleString());
+    console.log('********************');
     payPeriod.startDate = toLocalTime(sd);
     payPeriod.endDate = toLocalTime(ed);
 
