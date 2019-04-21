@@ -107,10 +107,12 @@ functions.getTimecards = async (request, h) => {
                         if (entry.jobType === 'Construction') {
                             timecardEntry.clientName = entry.job.clientName;
                             timecardEntry.job = entry.job.address;
+                            timecardEntry.jobNumber = entry.job.jobNumber;
                         }
                         else {
                             timecardEntry.clientName = '';
                             timecardEntry.job = entry.job;
+                            timecardEntry.jobNumber = '';
                         }
 
                         // Type filed for pdf
