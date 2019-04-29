@@ -4,6 +4,7 @@ const Server = require('../../src/server');
 const Sinon = require('sinon');
 const UtilsDB = require('../../src/utils/database');
 const UtilsPP = require('../../src/utils/payperiod');
+const UtilsCronJob = require('../../src/utils/cron-job');
 
 const lab = exports.lab = Lab.script();
 
@@ -308,3 +309,83 @@ lab.experiment('When /timecards', () => {
     });
 });
 
+lab.experiment('When executing cron jobs', () => {
+
+    lab.test('should get user ids for inactive users', async () => {
+
+        const snapshotStub =  Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                where() {
+
+                    return {
+                        where() {
+
+                            return {
+                                get: Sinon.stub().returns({
+                                    empty: true
+                                })
+                            };
+                        }
+                    };
+                }
+            };
+        });
+
+        const res = await UtilsCronJob.getInactiveUserIds();
+
+        snapshotStub.parent.restore();
+        Code.expect(res).to.equal([]);
+    });
+
+    lab.test('should remove a user if no errors occur', async () => {
+
+        const deleteStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                doc() {
+
+                    return {
+                        delete: Sinon.stub().returns([])
+                    };
+                }
+            };
+        });
+
+        const testUserId = 'pokjhgft6uikm';
+        const res = await UtilsCronJob.removeUser(testUserId);
+
+        deleteStub.parent.restore();
+        Code.expect(res).to.equal();
+
+    });
+
+    lab.test('should get ids for all users if no errors occur', async () => {
+
+        const fakeIds = ['oiuyijnbrenijd', 'iuybghuijknhb'];
+        const fakeSnapshot = {
+            empty: false,
+            docs: [
+                {
+                    id: fakeIds[0]
+                },
+                {
+                    id: fakeIds[1]
+                }
+            ]
+        };
+        const getStub = Sinon.stub(Server.db, 'collection').withArgs('users').callsFake(() => {
+
+            return {
+                get: Sinon.stub().returns(fakeSnapshot)
+            };
+        });
+
+        const testUserId = 'pokjhgft6uikm';
+        const res = await UtilsCronJob.getUserIds(testUserId);
+
+        getStub.parent.restore();
+        Code.expect(res).to.equal(fakeIds);
+
+    });
+});
