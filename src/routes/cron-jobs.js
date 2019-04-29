@@ -9,6 +9,16 @@ const cronJobs = [{
             'api'
         ]
     }
+},
+{
+    method: 'GET',
+    path: '/remove/oldEntries',
+    handler: functions.removeOldEntries,
+    options: {
+        tags: [
+            'api'
+        ]
+    }
 }
 ];
 

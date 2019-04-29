@@ -53,3 +53,45 @@ export const removeUser = async (id) => {
         throw err;
     }
 };
+
+export const getUserIds = async () => {
+
+    const server = require('../server.js');
+
+    try {
+        const snapshot = await server.db.collection('users').get();
+        if (snapshot.empty) {
+            return [];
+        }
+
+        const ids = snapshot.docs.map((doc) => doc.id);
+        return ids;
+    }
+    catch (err) {
+        throw err;
+    }
+};
+
+export const removeEntriesOnOrBefore = async (id, date) => {
+
+    const server = require('../server.js');
+
+    try {
+        const query = await server.db.collection('users').doc(id).collection('entries')
+            .where('jobDate', '<=', date);
+
+        const snapshot = query.get();
+        if (snapshot.empty) {
+            return;
+        }
+
+        const entryIds = snapshot.docs.map((doc) => doc.id);
+        await entryIds.forEach((entryId) => {
+
+            server.db.collection('users').doc(id).collection('entries').doc(entryId).delete();
+        });
+    }
+    catch (err) {
+        throw err;
+    }
+};
