@@ -4,6 +4,7 @@ import entries from './entries';
 import users from './users';
 import auth from './authentications';
 import timecards from './timecards';
+import cronJobs from './cron-jobs';
 
 let routes = [];
 
@@ -13,5 +14,6 @@ routes = routes.concat(entries);
 routes = routes.concat(users);
 routes = routes.concat(auth);
 routes = routes.concat(timecards);
+routes = routes.concat(cronJobs);
 
 export default routes;
