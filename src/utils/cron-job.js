@@ -80,7 +80,7 @@ export const removeEntriesOnOrBefore = async (id, date) => {
         const query = await server.db.collection('users').doc(id).collection('entries')
             .where('jobDate', '<=', date);
 
-        const snapshot = query.get();
+        const snapshot = await query.get();
         if (snapshot.empty) {
             return;
         }
