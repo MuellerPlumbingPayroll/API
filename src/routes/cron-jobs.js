@@ -5,6 +5,7 @@ const cronJobs = [{
     path: '/remove/inactiveUsers',
     handler: functions.removeInactiveUsers,
     options: {
+        auth:false,
         tags: [
             'api'
         ]
@@ -15,7 +16,9 @@ const cronJobs = [{
     path: '/remove/oldEntries',
     handler: functions.removeOldEntries,
     options: {
+        auth:false,
         tags: [
+
             'api'
         ]
     }
