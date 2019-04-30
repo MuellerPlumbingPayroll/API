@@ -5,14 +5,13 @@ const Joi = require('joi');
 
 const maxNumberHours = 16;
 const JobType = ['Construction', 'Service', 'Other'];
-const OtherJob = ['Shop', 'Vacation', 'Holiday', 'Sick', 'Unpaid Leave'];
 
 const EntrySchema = Joi.object().keys({
     jobType: Joi.string().valid(JobType).required(),
     job: Joi.alternatives()
         .when('jobType', { is: 'Construction', then: jobSchema })
         .when('jobType', { is: 'Service', then: Joi.string() })
-        .when('jobType', { is: 'Other', then: Joi.valid(OtherJob) }),
+        .when('jobType', { is: 'Other', then: jobSchema }),
     costCode: costCodeSchema.allow(null),
     jobDate: Joi.date().required(),
     timeWorked: Joi.number().min(0).max(maxNumberHours).required(),

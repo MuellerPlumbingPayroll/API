@@ -126,8 +126,8 @@ lab.experiment('When adding an entry', () => {
         const fakeEntryId = 's8cxutv7e8riuktht';
 
         const timeEntryInfo = {
-            jobType: 'Other',
-            job: 'Vacation',
+            jobType: 'Service',
+            job: 'Its a service job',
             timeWorked: 3,
             jobDate: now,
             latitude: null,
