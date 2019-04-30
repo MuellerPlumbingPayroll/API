@@ -1,0 +1,9 @@
+cron:
+- description: "remove any inactive users"
+  url: /remove/inactiveUsers
+  schedule: 1 of may, sep 00:00
+  timezone: America/Mexico_City
+- description: "remove old entries at the start of the year"
+  url: /remove/oldEntries
+  schedule: 1 of jan 00:00
+  timezone: America/Mexico_City
