@@ -104,7 +104,7 @@ functions.getTimecards = async (request, h) => {
                         const timecardEntry = {};
 
                         // Set client name and job/job description
-                        if (entry.jobType === 'Construction') {
+                        if (entry.jobType === 'Construction' || entry.jobType === 'Other') {
                             timecardEntry.clientName = entry.job.clientName;
                             timecardEntry.job = entry.job.address;
                             timecardEntry.jobNumber = entry.job.jobNumber;
